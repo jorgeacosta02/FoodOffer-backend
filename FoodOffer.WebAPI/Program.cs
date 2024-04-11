@@ -41,6 +41,12 @@ builder.Services.AddScoped<IUserService, UserService>(provider =>
     return new UserService(repository);
 });
 
+builder.Services.AddScoped<IAdvertisingService, AdvertisingService>(provider =>
+{
+    var repository = provider.GetRequiredService<IUserRepository>();
+    return new AdvertisingService(repository);
+});
+
 builder.Services.AddControllers();
 
 var app = builder.Build();

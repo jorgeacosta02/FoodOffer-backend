@@ -16,6 +16,8 @@ namespace FoodOffer.Infrastructure
 
         public DbSet<LoginData> LoginDatas { get; set; }
 
+        public DbSet<AdvertisingDb> Advertising { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Address>()
