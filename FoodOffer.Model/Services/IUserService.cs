@@ -9,6 +9,8 @@ namespace FoodOffer.Model.Services
 {
     public interface IUserService
     {
-        Client GetUser(short userId);
+        User GetUser(short userId);
+        List<User> GetUsers(short userId);
+        User PostUser(User data);
     }
 }

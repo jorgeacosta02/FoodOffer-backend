@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FoodOffer.Infrastructure.DbModels
 {
-    public class Client
+    public class ClientDb
     {
         [Key]
         public int Id { get; set; }

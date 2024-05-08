@@ -13,14 +13,30 @@ namespace FoodOffer.AppServices
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
-        public Client GetUser(short userId)
+        public User GetUser(short userId)
         {
            return _userRepository.GetUser(userId);
         }
+        public List<User> GetUsers(short userId)
+        {
+            return _userRepository.GetUsers();
+        }
 
-        public Client GetUserComplete(short userId)
+
+        public User GetUserComplete(short userId)
         {
             return _userRepository.GetUser(userId);
+        }
+
+        public User PostUser(User data)
+        {
+            //if (_userRepository.CreateUser(data))
+            //{
+            //    return data;
+            //}
+            //return null;
+
+            return _userRepository.InsertUser(data);
         }
 
     }

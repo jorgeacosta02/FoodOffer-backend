@@ -25,7 +25,7 @@ namespace FoodOffer.WebAPI.Controllers
         [HttpGet]
         public IActionResult Get([FromQuery] short userId)
         {
-            Client user = _userService.GetUser(userId);
+            User user = _userService.GetUser(userId);
 
             if (user != null)
             {
@@ -34,6 +34,22 @@ namespace FoodOffer.WebAPI.Controllers
             else
             {
                 return BadRequest("El usuario con Id = " + userId + " no existe. Revise los datos.");
+            }
+        }
+
+        [HttpPost]
+        [Route("addUser")]
+        public IActionResult Post([FromBody] User user)
+        {
+            User usr = _userService.PostUser(user);
+
+            if (user != null)
+            {
+                return Ok(user);
+            }
+            else
+            {
+                return BadRequest("No se puede crear el usuario.");
             }
         }
     }

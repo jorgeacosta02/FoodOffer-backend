@@ -9,7 +9,10 @@ namespace FoodOffer.Model.Repositories
 {
     public interface IUserRepository
     {
-        Client GetUser(short userId);
-        Client GetUser2(short userId);
+        User GetUser(short userId);
+        User GetUser2(short userId);
+        List<User> GetUsers();
+        bool CreateUser(User data);
+        User InsertUser(User data);
     }
 }

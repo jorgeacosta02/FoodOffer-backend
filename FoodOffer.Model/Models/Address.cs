@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System; // contiene tipos fundamentales y clases base que definen tipos de datos comunes, eventos y manipulación de archivos y E/S.
+using System.Collections.Generic;// contiene clases y interfaces genéricas que complementan las colecciones no genéricas del espacio de nombres System.Collections.
+using System.ComponentModel.DataAnnotations.Schema; // contiene clases que se utilizan para trabajar con anotaciones de atributos de esquema de base de datos.
+using System.ComponentModel.DataAnnotations; // contiene clases y atributos que se utilizan para definir metadatos de modelos y realizar validaciones de datos.
+using System.Linq; // proporciona clases y métodos que admiten consultas LINQ.
+using System.Text; // contiene clases que representan codificaciones de caracteres Unicode y clases que ayudan en la manipulación de texto.
+using System.Threading.Tasks; // contiene tipos que admiten la tarea basada en el modelo de programación asíncrona.
 
 namespace FoodOffer.Model.Models
 {

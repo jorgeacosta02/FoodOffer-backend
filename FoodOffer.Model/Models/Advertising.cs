@@ -9,7 +9,7 @@ namespace FoodOffer.Model.Models
     public class Advertising
     {
         public int Id { get; set; }
-        public Client ClientData { get; set; }
-        public List <Client> Properties { get; set; }
+        public User ClientData { get; set; }
+        public List <User> Properties { get; set; }
     }
 }
