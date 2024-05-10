@@ -5,6 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+// Define el modelo User con sus propiedades. Es el modelo que va a ser utilizado para manipular la info y
+// enviar al front.
+
+
 namespace FoodOffer.Model.Models
 {
     public class User

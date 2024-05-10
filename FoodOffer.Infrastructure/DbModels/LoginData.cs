@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace FoodOffer.Infrastructure.DbModels
 {
-    public class LoginData
+    public class LoginDataDb
     {
         [Key]
-        public int Id { get; set; } 
-        public string userName { get; set; }
-        public string password { get; set; }
-
+        [ForeignKey("users")]
+        public int log_usr_id { get; set; } 
+        public string log_email { get; set; }
+        public string log_pwd { get; set; }
     }
 }

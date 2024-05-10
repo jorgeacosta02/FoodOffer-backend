@@ -1,6 +1,6 @@
 ﻿using FoodOffer.Infrastructure.DbModels;
 using Microsoft.EntityFrameworkCore;
-
+    // Establece las tablas que van a ser creadas en la base de datos.
 namespace FoodOffer.Infrastructure
 {
     public class ApplicationDbContext : DbContext //La clase DbContext es una clase proporcionada por Entity Framework Core y se utiliza para interactuar con la base de datos utilizando este ORM. Proporciona funcionalidades para realizar operaciones de CRUD (Crear, Leer, Actualizar y Eliminar) en la base de datos y mapear objetos de dominio a tablas de base de datos y viceversa.

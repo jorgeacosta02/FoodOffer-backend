@@ -12,6 +12,11 @@ using System.Drawing;
 using static System.Net.Mime.MediaTypeNames;
 using MySqlX.XDevAPI;
 using FoodOffer.Infrastructure.DbModels;
+
+// Acá se hacen las solicitudes a la base de datos. Una ventaja es poder hacer una sola solicitud con uniones
+// con diferentes tablas relacionadas. Este repository puede ser usado por diferentes services para 
+// extraer la info necesaria.
+
 // using System.Drawing;, using static System.Net.Mime.MediaTypeNames;: Estos using no parecen ser necesarios y podrían ser eliminados.
 
 namespace FoodOffer.Repository
