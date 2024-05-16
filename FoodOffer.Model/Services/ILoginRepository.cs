@@ -5,15 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-//
-
 namespace FoodOffer.Model.Services
 {
-    public interface IUserService
+    public interface ILoginRepository
     {
-        User GetUser(short userId);
-        List<User> GetUsers(short userId);
-        User CreateUser(User data);
-        User Login(LoginData data); 
+        LoginData GetAccess(int userId);
+        bool CreateLoginData(User user, string salt);
     }
 }

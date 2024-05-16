@@ -22,9 +22,9 @@ namespace FoodOffer.AppServices
         public Advertising GetAdvertising(int Id) 
         {
             Advertising advertising = new Advertising();
-            //GPG marca un errror al utilizar el dato de advertising.Id antes de asignarle un valor.
-            advertising.ClientData = _userRepository.GetUser((short)advertising.Id);
-            //advertising.Properties.AddRange
+            ////GPG marca un errror al utilizar el dato de advertising.Id antes de asignarle un valor.
+            //advertising.us = _userRepository.GetUser((short)advertising.Id);
+            ////advertising.Properties.AddRange
             return advertising;
         }
 
