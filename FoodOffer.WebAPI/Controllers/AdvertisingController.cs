@@ -26,5 +26,21 @@ namespace FoodOffer.WebAPI.Controllers
                 return BadRequest("El usuario con Id = " + userId + " no existe. Revise los datos.");
             }
         }
+
+        [HttpGet]
+        [Route("GetAdvertisings")]
+        public IActionResult GetAdvertisings()
+        {
+            var advs = _advertisingService.GetAdvertisings();
+
+            if (advs != null && advs.Count > 0)
+            {
+                return Ok(advs);
+            }
+            else
+            {
+                return BadRequest("No se encontraron publicaciones activas.");
+            }
+        }
     }
 }

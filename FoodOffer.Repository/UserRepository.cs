@@ -62,8 +62,8 @@ namespace FoodOffer.Repository
                                 user.Password = Convert.ToString(reader["Password"]);
                                 user.Email = Convert.ToString(reader["Email"]);
                                 user.Address = new Model.Models.Address();
-                                user.Address.Street = Convert.ToString(reader["Street"]);
-                                user.Address.Number = Convert.ToInt16(reader["Number"]);
+                                //user.Address.Street = Convert.ToString(reader["Street"]);
+                                //user.Address.Number = Convert.ToInt16(reader["Number"]);
                             }
                         }
                     }

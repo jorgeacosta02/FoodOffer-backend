@@ -5,11 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FoodOffer.Model.Services
+namespace FoodOffer.Model.Repositories
 {
-    public interface IAdvertisingService
+    public interface IAdvertisingRepository
     {
-        Advertising GetAdvertising(int Id);
         List<Advertising> GetAdvertisings();
     }
 }

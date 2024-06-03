@@ -1,11 +1,7 @@
-﻿using FoodOffer.Model.Models;
+﻿using FoodOffer.Infrastructure;
+using FoodOffer.Model.Models;
 using FoodOffer.Model.Repositories;
 using FoodOffer.Model.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FoodOffer.AppServices
 {
@@ -13,10 +9,17 @@ namespace FoodOffer.AppServices
         // Trae los datos del usuario relacionado al aviso.
 
     {
-        private readonly IUserRepository _userRepository;
-        public AdvertisingService(IUserRepository userRepository) 
+        private readonly IAdvertisingRepository _advertisingRepository;
+        //private readonly AmazonS3Service _s3Service;
+        public AdvertisingService(IAdvertisingRepository advertisingRepository) 
         {
-            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            _advertisingRepository = advertisingRepository ?? throw new ArgumentNullException(nameof(advertisingRepository));
+            //_s3Service = s3Service ?? throw new ArgumentNullException(nameof(s3Service));
+        }
+
+        public List<Advertising> GetAdvertisings()
+        {
+            return _advertisingRepository.GetAdvertisings();
         }
 
         public Advertising GetAdvertising(int Id) 

@@ -50,6 +50,14 @@ builder.Services.AddScoped<ILoginRepository, LoginRepository>(provider =>
     return new LoginRepository(connection, context, mapper);
 });
 
+builder.Services.AddScoped<IAdvertisingRepository, AdvertisingRepository>(provider =>
+{
+    var connection = provider.GetRequiredService<IDbConecction>();
+    var context = provider.GetRequiredService<ApplicationDbContext>();
+    var mapper = provider.GetRequiredService<IMapper>();
+    return new AdvertisingRepository(connection, context, mapper);
+});
+
 
 //Services registration
 // Se registra la interfaz IUserService y su implementación UserService en el contenedor de servicios.
@@ -66,7 +74,7 @@ builder.Services.AddScoped<IUserService, UserService>(provider =>
 // Esta implementación se utiliza para proporcionar funcionalidades relacionadas con la publicidad.
 builder.Services.AddScoped<IAdvertisingService, AdvertisingService>(provider =>
 {
-    var repository = provider.GetRequiredService<IUserRepository>();
+    var repository = provider.GetRequiredService<IAdvertisingRepository>();
     return new AdvertisingService(repository);
 });
 
