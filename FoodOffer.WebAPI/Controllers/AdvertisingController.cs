@@ -1,4 +1,5 @@
 ﻿using FoodOffer.AppServices;
+using FoodOffer.Model.Models;
 using FoodOffer.Model.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,11 +28,11 @@ namespace FoodOffer.WebAPI.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("GetAdvertisings")]
-        public IActionResult GetAdvertisings()
+        public IActionResult GetAdvertisings([FromBody] Filter filter)
         {
-            var advs = _advertisingService.GetAdvertisings();
+            var advs = _advertisingService.GetAdvertisings(filter);
 
             if (advs != null && advs.Count > 0)
             {

@@ -17,9 +17,9 @@ namespace FoodOffer.AppServices
             //_s3Service = s3Service ?? throw new ArgumentNullException(nameof(s3Service));
         }
 
-        public List<Advertising> GetAdvertisings()
+        public List<Advertising> GetAdvertisings(Filter filter)
         {
-            return _advertisingRepository.GetAdvertisings();
+            return _advertisingRepository.GetAdvertisings(filter);
         }
 
         public Advertising GetAdvertising(int Id) 

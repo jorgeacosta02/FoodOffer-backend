@@ -29,6 +29,18 @@ namespace FoodOffer.Repository.Mapper
             .ForMember(a => a.uld_pwd, b => b.MapFrom(src => src.Password))
             .ForMember(a => a.uld_salt, b => b.MapFrom(src => src.Salt))
             .ReverseMap();
+
+            CreateMap<Advertising, Db_Advertising>()
+            .ForMember(a => a.adv_id, b => b.MapFrom(src => src.Id))
+            .ForMember(a => a.adv_title, b => b.MapFrom(src => src.Title))
+            .ForMember(a => a.adv_desc, b => b.MapFrom(src => src.Description))
+            .ForMember(a => a.adv_price, b => b.MapFrom(src => src.Price))
+            .ForMember(a => a.adv_cat_cod, b => b.MapFrom(src => src.Category.Code))
+            .ForMember(a => a.adv_ads_cod, b => b.MapFrom(src => src.State.Code))
+            .ForMember(a => a.adv_create_data, b => b.MapFrom(src => src.CreationDate))
+            .ForMember(a => a.adv_update_data, b => b.MapFrom(src => src.UpdateDate))
+            .ForMember(a => a.adv_delete_data, b => b.MapFrom(src => src.DeleteDate))
+            .ReverseMap();
         }
     }
 }

@@ -10,6 +10,6 @@ namespace FoodOffer.Model.Services
     public interface IAdvertisingService
     {
         Advertising GetAdvertising(int Id);
-        List<Advertising> GetAdvertisings();
+        List<Advertising> GetAdvertisings(Filter filter);
     }
 }

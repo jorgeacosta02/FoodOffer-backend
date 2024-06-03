@@ -12,7 +12,12 @@ namespace FoodOffer.Model.Models
         public string Title { get; set; } 
         public string Description { get; set; }
         public double Price { get; set; }
+        public AdvertisingState State { get; set; }
+        public Category Category { get; set; }
         public Commerce Commerce { get; set; }
         public List <Attribute> Attributes { get; set; }
+        public DateTime CreationDate { get; set; }
+        public DateTime UpdateDate { get; set; }
+        public DateTime DeleteDate { get; set; }
     }
 }

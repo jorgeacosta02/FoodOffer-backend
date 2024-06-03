@@ -9,6 +9,6 @@ namespace FoodOffer.Model.Repositories
 {
     public interface IAdvertisingRepository
     {
-        List<Advertising> GetAdvertisings();
+        List<Advertising> GetAdvertisings(Filter filter);
     }
 }

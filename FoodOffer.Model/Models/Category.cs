@@ -6,10 +6,16 @@ using System.Threading.Tasks;
 
 namespace FoodOffer.Model.Models
 {
-    public class Attribute
+    public class Category
     {
-        public int Id { get; set; }
+        public short Code { get; set; }
         public string Description { get; set; }
-        public char Value { get; set; }
+
+        public Category(short code, string description)
+        {
+            Code = code;
+            Description = description;  
+        }   
+
     }
 }
