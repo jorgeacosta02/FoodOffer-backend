@@ -364,3 +364,5 @@ FodyWeavers.xsd
 
 .appsettings.json
 /FoodOffer.Infrastructure/AmazonS3Service.cs
+/FoodOffer.WebAPI/appsettings.json
+/FoodOffer.WebAPI/appsettings.json
