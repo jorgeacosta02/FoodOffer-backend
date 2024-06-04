@@ -16,8 +16,18 @@ namespace FoodOffer.Model.Models
         public Category Category { get; set; }
         public Commerce Commerce { get; set; }
         public List <Attribute> Attributes { get; set; }
+        public List<Image> Images { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime UpdateDate { get; set; }
-        public DateTime DeleteDate { get; set; }
+        public DateTime? DeleteDate { get; set; }
+
+        public Advertising()
+        {
+            Attributes = new List<Attribute>();
+            Images = new List<Image>();
+            Commerce = new Commerce();
+            Category = new Category();
+            State = new AdvertisingState();
+        }
     }
 }

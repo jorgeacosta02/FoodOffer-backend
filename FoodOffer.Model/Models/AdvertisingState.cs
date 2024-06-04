@@ -9,7 +9,9 @@ namespace FoodOffer.Model.Models
     public class AdvertisingState
     {
         public char Code { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
+
+        public AdvertisingState() {}
 
         public AdvertisingState(char code, string description)
         {

@@ -11,5 +11,6 @@ namespace FoodOffer.Model.Services
     {
         Advertising GetAdvertising(int Id);
         List<Advertising> GetAdvertisings(Filter filter);
+        Advertising CreateAdvertising(Advertising advertising);
     }
 }

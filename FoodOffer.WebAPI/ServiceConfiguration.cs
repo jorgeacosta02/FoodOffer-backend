@@ -52,14 +52,6 @@ public static class ServiceConfiguration
             return new LoginRepository(connection, context, mapper);
         });
 
-        //builder.Services.AddScoped<IAddressRepository, AddressRepository>(provider =>
-        //{
-        //    var connection = provider.GetRequiredService<IDbConecction>();
-        //    var context = provider.GetRequiredService<ApplicationDbContext>();
-        //    var mapper = provider.GetRequiredService<IMapper>();
-        //    return new AddressRepository(connection, context, mapper);
-        //});
-
         builder.Services.AddScoped<IAdvertisingRepository, AdvertisingRepository>(provider =>
         {
             var connection = provider.GetRequiredService<IDbConecction>();
@@ -68,39 +60,19 @@ public static class ServiceConfiguration
             return new AdvertisingRepository(connection, context, mapper);
         });
 
-        //builder.Services.AddScoped<IAttributeRepository, AttributesRepository>(provider =>
-        //{
-        //    var connection = provider.GetRequiredService<IDbConecction>();
-        //    var context = provider.GetRequiredService<ApplicationDbContext>();
-        //    var mapper = provider.GetRequiredService<IMapper>();
-        //    return new AttributesRepository(connection, context, mapper);
-        //});
-
         #endregion
 
         #region Services
 
-        // Se registran los servicios.
-        //builder.Services.AddScoped<IUserService, UserService>(provider =>
-        //{
-        //    var userRepository = provider.GetRequiredService<IUserRepository>();
-        //    var loginRepository = provider.GetRequiredService<ILoginRepository>();
-        //    var addressRepository = provider.GetRequiredService<IAddressRepository>();
-        //    return new UserService(userRepository, loginRepository, addressRepository);
-        //});
 
         builder.Services.AddScoped<IAdvertisingService, AdvertisingService>(provider =>
         {
-            var repository = provider.GetRequiredService<IAdvertisingRepository>();
-            //var amazon = provider.GetRequiredService<AmazonS3Service>();
-            return new AdvertisingService(repository);
-        });
+            var advertisingRepository = provider.GetRequiredService<IAdvertisingRepository>();
+            var imagesRepository = provider.GetRequiredService<IImagesRepository>();
+            var s3 = provider.GetRequiredService<AmazonS3Service>();
 
-        //builder.Services.AddScoped<IAttributeService, AttributeService>(provider =>
-        //{
-        //    var repository = provider.GetRequiredService<IAttributeRepository>();
-        //    return new AttributeService(repository);
-        //});
+            return new AdvertisingService(advertisingRepository, imagesRepository, s3);
+        });
 
         #endregion
 

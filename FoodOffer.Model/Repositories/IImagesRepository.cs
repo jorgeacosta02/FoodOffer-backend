@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace FoodOffer.Model.Repositories
 {
-    public interface IAdvertisingRepository
+    public interface IImagesRepository
     {
-        List<Advertising> GetAdvertisings(Filter filter);
-        int SaveAdvertisingData(Advertising advertising);
+        bool SaveImageData(Image image, char type);
     }
 }

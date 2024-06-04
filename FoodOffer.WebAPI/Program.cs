@@ -1,6 +1,7 @@
 using AutoMapper;
 using FoodOffer.AppServices;
 using FoodOffer.Infrastructure;
+using FoodOffer.Model.Models;
 using FoodOffer.Model.Repositories;
 using FoodOffer.Model.Services;
 using FoodOffer.Repository;
@@ -32,6 +33,10 @@ builder.Services.AddScoped<IDbConecction>(_ =>
     return new MySqlConnectionProvider(mySqlConnection);
 });
 
+builder.Services.Configure<AWSOptions>(builder.Configuration.GetSection("AWS"));
+
+builder.Services.AddScoped<AmazonS3Service>();
+
 // Se registra la interfaz IUserRepository y su implementación UserRepository en el contenedor de servicios.
 // Esta implementación se encarga de interactuar con la base de datos para realizar operaciones relacionadas con los usuarios.
 builder.Services.AddScoped<IUserRepository, UserRepository>(provider =>
@@ -58,6 +63,14 @@ builder.Services.AddScoped<IAdvertisingRepository, AdvertisingRepository>(provid
     return new AdvertisingRepository(connection, context, mapper);
 });
 
+builder.Services.AddScoped<IImagesRepository, ImagesRepository>(provider =>
+{
+    var connection = provider.GetRequiredService<IDbConecction>();
+    var context = provider.GetRequiredService<ApplicationDbContext>();
+    var mapper = provider.GetRequiredService<IMapper>();
+    return new ImagesRepository(connection, context, mapper);
+});
+
 
 //Services registration
 // Se registra la interfaz IUserService y su implementación UserService en el contenedor de servicios.
@@ -74,8 +87,24 @@ builder.Services.AddScoped<IUserService, UserService>(provider =>
 // Esta implementación se utiliza para proporcionar funcionalidades relacionadas con la publicidad.
 builder.Services.AddScoped<IAdvertisingService, AdvertisingService>(provider =>
 {
-    var repository = provider.GetRequiredService<IAdvertisingRepository>();
-    return new AdvertisingService(repository);
+    var advertisingRepository = provider.GetRequiredService<IAdvertisingRepository>();
+    var imagesRepository = provider.GetRequiredService<IImagesRepository>();
+    var s3 = provider.GetRequiredService<AmazonS3Service>();
+
+    return new AdvertisingService(advertisingRepository, imagesRepository, s3);
+});
+
+
+builder.Services.AddCors(opt =>
+{
+    opt.AddDefaultPolicy(builder =>
+    {
+
+        builder.AllowAnyOrigin()
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+
+    });
 });
 
 
@@ -83,9 +112,14 @@ builder.Services.AddScoped<IAdvertisingService, AdvertisingService>(provider =>
 // Esto permite que los controladores estén disponibles para manejar las solicitudes HTTP entrantes.
 builder.Services.AddControllers();
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseStaticFiles();
+
+// Configure the HTTP request pipeline.
+app.UseCors();
 
 app.UseHttpsRedirection();
 

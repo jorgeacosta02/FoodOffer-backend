@@ -9,14 +9,14 @@ using System.Text;
 
 namespace FoodOffer.Repository
 {
-    public class AdvertisingRepository : IAdvertisingRepository
+    public class ImagesRepository : IImagesRepository
     {
 
         private readonly ApplicationDbContext _context;
         private readonly IDbConecction _session;
         private readonly IMapper _mapper;
 
-        public AdvertisingRepository(IDbConecction dbConecction, ApplicationDbContext context, IMapper mapper)
+        public ImagesRepository(IDbConecction dbConecction, ApplicationDbContext context, IMapper mapper)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _session = dbConecction ?? throw new ArgumentNullException(nameof(dbConecction));
@@ -111,17 +111,22 @@ namespace FoodOffer.Repository
 
         }
 
-        public int SaveAdvertisingData(Advertising advertising)
+        public bool SaveImageData(Image image, char type)
         {
-            advertising.CreationDate = DateTime.Now;
-            advertising.UpdateDate = DateTime.Now;
-            advertising.DeleteDate = null;
-            var data = _mapper.Map<Db_Advertising>(advertising);
 
-            var result = _context.advertisings.Add(data);
-            if (_context.SaveChanges() == 1)
-                return data.adv_id;
-            return 0;
+            if(type == 'A')
+            {
+                var data = _mapper.Map<Db_Advertising_Image>(image);
+                var result = _context.advertising_images.Add(data);
+                return _context.SaveChanges() == 1 ? true : false;
+            }
+            else
+            {
+                var data = _mapper.Map<Db_Advertising_Image>(image);
+                var result = _context.advertising_images.Add(data);
+                return _context.SaveChanges() == 1 ? true : false;
+            }
+
         }
 
 
