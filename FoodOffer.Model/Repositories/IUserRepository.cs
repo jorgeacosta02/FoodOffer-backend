@@ -14,9 +14,13 @@ namespace FoodOffer.Model.Repositories
     public interface IUserRepository
     {
         User GetUser(short userId);
-        User GetUser2(short userId);
+        User GetUserByIdSimple(short userId);
+        User GetUserCompleteByEmail(string email);
+        User GetUserByEmail(string email);
         List<User> GetUsers();
         bool CreateUser(User data);
         User InsertUser(User data);
+        User UpdateUser(User user);
+        void DeleteUser(int userId);
     }
 }

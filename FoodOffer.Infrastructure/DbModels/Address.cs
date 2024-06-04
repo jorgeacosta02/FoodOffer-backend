@@ -6,22 +6,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FoodOffer.Infrastructure.DbModels
+namespace clasificados.Infraestructure.DbContextConfig.DbModels
 {
-    public class Address
+    public class Db_Address
     {
         [Key]
-        [Column(Order = 0)]
-        public short Client_Id { get; set; }
+        public int add_ref_id { get; set; }
         [Key]
-        [Column(Order = 1)]
-        public short Item { get; set; }
-        public string Street { get; set; }
-        public short Number { get; set; }
-        public short Floor { get; set; }
-        public string Apartment { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
+        public char add_ref_type { get; set; }
+        [Key]
+        public short add_item { get; set; }
+        [MaxLength(255)]
+        public string add_desc { get; set; }
+        public short add_city { get; set; }
+        public short add_state { get; set; }
+        [MaxLength(255)]
+        public string? add_obs { get; set; }
 
     }
 }
