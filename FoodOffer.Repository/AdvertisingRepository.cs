@@ -6,6 +6,7 @@ using FoodOffer.Model.Repositories;
 using MySql.Data.MySqlClient;
 using System.Linq;
 using System.Text;
+using static System.Net.WebRequestMethods;
 
 namespace FoodOffer.Repository
 {
@@ -15,6 +16,7 @@ namespace FoodOffer.Repository
         private readonly ApplicationDbContext _context;
         private readonly IDbConecction _session;
         private readonly IMapper _mapper;
+        private readonly string s3Path = "https://s3.sa-east-1.amazonaws.com/clickfood/";
 
         public AdvertisingRepository(IDbConecction dbConecction, ApplicationDbContext context, IMapper mapper)
         {
@@ -46,7 +48,9 @@ namespace FoodOffer.Repository
             query.AppendLine("SELECT * FROM advertising_time_settings ");
             query.AppendLine("INNER JOIN advertisings ON adv_id = ats_adv_id ");
             query.AppendLine("INNER JOIN advertising_categories ON cat_cod = adv_cat_cod ");
+            query.AppendLine("INNER JOIN advertising_states ON ads_cod = adv_ads_cod ");
             query.AppendLine("LEFT JOIN advertising_attributes ON ada_adv_id = adv_id ");
+            query.AppendLine("LEFT JOIN advertising_images ON adi_adv_id = adv_id AND adi_item = 1 ");
             query.AppendLine("WHERE ats_day IN (" + days + ") ");
             query.AppendLine("AND adv_ads_cod = 'A' ");
             query.AppendLine("AND adv_delete_data IS NULL ");
@@ -95,6 +99,10 @@ namespace FoodOffer.Repository
                                 adv.Price = Convert.ToDouble(reader["adv_price"]);
                                 adv.Description = Convert.ToString(reader["adv_desc"]);
                                 adv.Category = new Category(Convert.ToInt16(reader["cat_cod"]), Convert.ToString(reader["cat_desc"]));
+                                adv.State = new AdvertisingState(Convert.ToChar(reader["ads_cod"]), Convert.ToString(reader["ads_desc"]));
+                                var img = reader["adi_name"] != DBNull.Value ? true : false;
+                                if(img)
+                                    adv.Images.Add(new Image(adv.Id, 1, Convert.ToString(reader["adi_name"]), s3Path + Convert.ToString(reader["adi_path"]), null));
                                 advertisings.Add(adv);
                             }
                         }

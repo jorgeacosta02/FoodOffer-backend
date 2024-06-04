@@ -14,6 +14,20 @@ namespace FoodOffer.Model.Models
         public string Name { get; set; }
         public string Path { get; set; }
         public IFormFile ImageFile { get; set; }
-        public string ImageURL { get; set; }
+
+        public Image () { }
+
+        public Image(int referenceId, short item, string name, string path, IFormFile? imageFile)
+        {
+            ReferenceId = referenceId;
+            Item = item;
+            Name = name;
+            Path = path;
+            if(imageFile != null)
+            {
+                ImageFile = imageFile;
+            }
+
+        }
     }
 }
