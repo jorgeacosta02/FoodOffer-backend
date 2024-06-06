@@ -66,10 +66,10 @@ namespace FoodOffer.Infrastructure.Migrations
                     b.Property<int>("adv_com_id")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("adv_create_data")
+                    b.Property<DateTime>("adv_create_date")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime?>("adv_delete_data")
+                    b.Property<DateTime?>("adv_delete_date")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("adv_desc")
@@ -84,7 +84,7 @@ namespace FoodOffer.Infrastructure.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("varchar(150)");
 
-                    b.Property<DateTime>("adv_update_data")
+                    b.Property<DateTime>("adv_update_date")
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("adv_id");
@@ -179,7 +179,6 @@ namespace FoodOffer.Infrastructure.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("ats_nextday_1")
-                        .IsRequired()
                         .HasColumnType("varchar(1)");
 
                     b.Property<string>("ats_nextday_2")
@@ -235,6 +234,9 @@ namespace FoodOffer.Infrastructure.Migrations
                 {
                     b.Property<short>("cit_cod")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("cit_cou_cod")
                         .HasColumnType("smallint");
 
                     b.Property<string>("cit_desc")
@@ -339,6 +341,22 @@ namespace FoodOffer.Infrastructure.Migrations
                     b.ToTable("commerce_types");
                 });
 
+            modelBuilder.Entity("clasificados.Infraestructure.DbContextConfig.DbModels.Db_Country", b =>
+                {
+                    b.Property<short>("cou_cod")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("cou_desc")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("cou_cod");
+
+                    b.ToTable("countries");
+                });
+
             modelBuilder.Entity("clasificados.Infraestructure.DbContextConfig.DbModels.Db_Identification_Type", b =>
                 {
                     b.Property<short>("ide_cod")
@@ -359,6 +377,9 @@ namespace FoodOffer.Infrastructure.Migrations
                 {
                     b.Property<short>("ste_cod")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("ste_cou_cod")
                         .HasColumnType("smallint");
 
                     b.Property<string>("ste_desc")

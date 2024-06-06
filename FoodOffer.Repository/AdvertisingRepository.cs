@@ -160,7 +160,7 @@ namespace FoodOffer.Repository
             if (existingAdv == null)
                 throw new Exception($"No fue posible encontrar aviso con Id: {advertising.Id}");
 
-            existingAdv.adv_update_data = DateTime.Now;
+            existingAdv.adv_update_date = DateTime.Now;
             existingAdv.adv_ads_cod = advertising.State.Code;
             return _context.SaveChanges() == 1;
 
@@ -176,8 +176,8 @@ namespace FoodOffer.Repository
 
             if (existingAdv != null)
             {
-                existingAdv.adv_update_data = DateTime.Now;
-                existingAdv.adv_delete_data = DateTime.Now;
+                existingAdv.adv_update_date = DateTime.Now;
+                existingAdv.adv_delete_date = DateTime.Now;
 
                 flag = _context.SaveChanges() == 1;
             }

@@ -45,9 +45,9 @@ namespace FoodOffer.Repository.Mapper
             .ForMember(a => a.adv_cat_cod, b => b.MapFrom(src => src.Category.Code))
             .ForMember(a => a.adv_com_id, b => b.MapFrom(src => src.Commerce.Id))
             .ForMember(a => a.adv_ads_cod, b => b.MapFrom(src => src.State.Code))
-            .ForMember(a => a.adv_create_data, b => b.MapFrom(src => src.CreationDate))
-            .ForMember(a => a.adv_update_data, b => b.MapFrom(src => src.UpdateDate))
-            .ForMember(a => a.adv_delete_data, b => b.MapFrom(src => src.DeleteDate))
+            .ForMember(a => a.adv_create_date, b => b.MapFrom(src => src.CreationDate))
+            .ForMember(a => a.adv_update_date, b => b.MapFrom(src => src.UpdateDate))
+            .ForMember(a => a.adv_delete_date, b => b.MapFrom(src => src.DeleteDate))
             .ReverseMap();
         }
     }

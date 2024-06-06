@@ -45,6 +45,7 @@ namespace FoodOffer.Infrastructure
         public DbSet<Db_City> cities { get; set; }
 
         public DbSet<Db_State> states { get; set; }
+        public DbSet<Db_Country> countries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

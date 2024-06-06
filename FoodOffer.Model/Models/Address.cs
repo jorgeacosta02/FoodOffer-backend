@@ -14,8 +14,9 @@ namespace FoodOffer.Model.Models
         public char Ref_Type { get; set; }
         public short Item { get; set; }
         public string Description { get; set; }
-        public short City { get; set; }
-        public short State { get; set; }
+        public City City { get; set; }
+        public State State { get; set; }
+        public Country Country { get; set; }
         public string? Obs { get; set; }
 
     }

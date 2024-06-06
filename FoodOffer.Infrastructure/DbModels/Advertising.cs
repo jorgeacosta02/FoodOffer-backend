@@ -26,8 +26,8 @@ namespace clasificados.Infraestructure.DbContextConfig.DbModels
 
         [ForeignKey("advertising_categories")]
         public short adv_cat_cod { get; set; }
-        public DateTime adv_create_data { get; set; }
-        public DateTime? adv_delete_data { get; set; }
-        public DateTime adv_update_data { get; set; }
+        public DateTime adv_create_date { get; set; }
+        public DateTime? adv_delete_date { get; set; }
+        public DateTime adv_update_date { get; set; }
     }
 }

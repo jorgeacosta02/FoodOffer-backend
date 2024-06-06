@@ -86,6 +86,9 @@ namespace FoodOffer.Repository
             var query = new StringBuilder();
             query.AppendLine("SELECT * FROM users ");
             query.AppendLine("LEFT JOIN addresses ON usr_id = add_ref_id AND add_ref_type = 'U' ");
+            query.AppendLine("INNER JOIN countries ON cou_cod = add_cou_cod ");
+            query.AppendLine("INNER JOIN states ON ste_cod = add_ste_cod AND ste_cou_cod = add_cou_cod ");
+            query.AppendLine("INNER JOIN cities ON cit_cod = add_cit_cod AND cit_cou_cod = add_cou_cod AND cit_ste_cod == add_ste_cod ");
             query.AppendLine("WHERE usr_mail = ? ");
 
 
@@ -109,8 +112,9 @@ namespace FoodOffer.Repository
                                 user.Email = Convert.ToString(reader["usr_mail"]);
                                 user.Address = new Address();
                                 user.Address.Description = Convert.ToString(reader["add_desc"]);
-                                user.Address.City = Convert.ToInt16(reader["add_city"]);
-                                user.Address.State = Convert.ToInt16(reader["add_state"]);
+                                user.Address.City = new City(Convert.ToInt16(reader["cit_cod"]), Convert.ToString(reader["cit_desc"]));
+                                user.Address.State = new State(Convert.ToInt16(reader["ste_cod"]), Convert.ToString(reader["ste_desc"]));
+                                user.Address.Country = new Country(Convert.ToInt16(reader["cou_cod"]), Convert.ToString(reader["cou_desc"]));
                             }
                         }
                     }

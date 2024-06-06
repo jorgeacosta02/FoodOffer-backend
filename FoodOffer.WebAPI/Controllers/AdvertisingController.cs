@@ -107,7 +107,7 @@ namespace FoodOffer.WebAPI.Controllers
                 }
 
 
-                return Ok(_advertisingService.UpdateAdvertising(adv, false));
+                return Ok(_advertisingService.UpdateAdvertising(adv));
             }
             catch (Exception ex)
             {
@@ -125,7 +125,7 @@ namespace FoodOffer.WebAPI.Controllers
                 adv.Id = id;
                 adv.State.Code = state;
 
-                return Ok(_advertisingService.UpdateAdvertising(adv, true));
+                return Ok(_advertisingService.UpdateAdvertisingState(adv));
             }
             catch (Exception ex)
             {

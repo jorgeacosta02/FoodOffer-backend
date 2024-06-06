@@ -8,15 +8,11 @@ using System.Threading.Tasks;
 
 namespace clasificados.Infraestructure.DbContextConfig.DbModels
 {
-    public class Db_State
+    public class Db_Country
     {
         [Key]
-        public short ste_cod { get; set; }
-
+        public short cou_cod { get; set; }
         [MaxLength(50)]
-        public string ste_desc { get; set; }
-
-        [ForeignKey("countries")]
-        public short ste_cou_cod { get; set; }
+        public string cou_desc { get; set; }
     }
 }
