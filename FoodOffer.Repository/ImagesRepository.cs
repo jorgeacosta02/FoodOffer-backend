@@ -129,6 +129,27 @@ namespace FoodOffer.Repository
 
         }
 
+        public bool DeleteImageData(int advId, short item)
+        {
+            var flag = false;
+
+            var existingImg= _context.advertising_images.FirstOrDefault(adi => adi.adi_adv_id == advId && adi.adi_item == item);
+
+            if (existingImg != null)
+            {
+                _context.advertising_images.Remove(existingImg);
+
+                flag = _context.SaveChanges() == 1;
+            }
+            else
+            {
+                throw new Exception("Image data not found.");
+            }
+
+            return flag;
+
+        }
+
 
     }
 }

@@ -13,6 +13,8 @@ namespace FoodOffer.Model.Models
         public short Item { get; set; }
         public string Name { get; set; }
         public string Path { get; set; }
+        public bool Keep { get; set; }
+        public bool New { get; set; }
         public IFormFile ImageFile { get; set; }
 
         public Image () { }

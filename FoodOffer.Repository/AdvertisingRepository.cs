@@ -4,9 +4,7 @@ using FoodOffer.Infrastructure;
 using FoodOffer.Model.Models;
 using FoodOffer.Model.Repositories;
 using MySql.Data.MySqlClient;
-using System.Linq;
 using System.Text;
-using static System.Net.WebRequestMethods;
 
 namespace FoodOffer.Repository
 {
@@ -119,6 +117,16 @@ namespace FoodOffer.Repository
 
         }
 
+        public Advertising GetAdvertisingData(int id)
+        {
+
+            var Adv = _context.advertisings.FirstOrDefault(adv => adv.adv_id == id);
+            _context.Dispose();
+
+            return _mapper.Map<Advertising>(Adv);
+
+        }
+
         public int SaveAdvertisingData(Advertising advertising)
         {
             advertising.CreationDate = DateTime.Now;
@@ -130,6 +138,56 @@ namespace FoodOffer.Repository
             if (_context.SaveChanges() == 1)
                 return data.adv_id;
             return 0;
+        }
+
+        public bool UpdateAdvertisingData(Advertising advertising)
+        {
+            advertising.UpdateDate = DateTime.Now;
+            advertising.DeleteDate = null;
+
+            var data = _mapper.Map<Db_Advertising>(advertising);
+
+            var result = _context.advertisings.Update(data);
+
+            return _context.SaveChanges() == 1;
+
+        }
+
+        public bool UpdateAdvertisingState(Advertising advertising)
+        {
+            var existingAdv = _context.advertisings.FirstOrDefault(adv => adv.adv_id == advertising.Id);
+
+            if (existingAdv == null)
+                throw new Exception($"No fue posible encontrar aviso con Id: {advertising.Id}");
+
+            existingAdv.adv_update_data = DateTime.Now;
+            existingAdv.adv_ads_cod = advertising.State.Code;
+            return _context.SaveChanges() == 1;
+
+        }
+
+        public bool DeleteAdvertisingData(int id)
+        {
+
+
+            var flag = false;
+
+            var existingAdv = _context.advertisings.FirstOrDefault(adv => adv.adv_id == id);
+
+            if (existingAdv != null)
+            {
+                existingAdv.adv_update_data = DateTime.Now;
+                existingAdv.adv_delete_data = DateTime.Now;
+
+                flag = _context.SaveChanges() == 1;
+            }
+            else
+            {
+                throw new Exception("Advertising not found.");
+            }
+
+            return flag;
+
         }
 
 

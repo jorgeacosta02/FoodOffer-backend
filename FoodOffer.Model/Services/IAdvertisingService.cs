@@ -12,5 +12,7 @@ namespace FoodOffer.Model.Services
         Advertising GetAdvertising(int Id);
         List<Advertising> GetAdvertisings(Filter filter);
         Advertising CreateAdvertising(Advertising advertising);
+        Advertising UpdateAdvertising(Advertising advertising, bool stateOnly);
+        bool DeleteAdvertising(int id);
     }
 }

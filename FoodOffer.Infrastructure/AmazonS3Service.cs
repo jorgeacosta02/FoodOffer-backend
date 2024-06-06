@@ -4,6 +4,7 @@ using Amazon.S3;
 using Microsoft.Extensions.Options;
 using FoodOffer.Model.Models;
 using Microsoft.AspNetCore.Http;
+using Amazon.S3.Model;
 
 namespace FoodOffer.Infrastructure
 {
@@ -42,6 +43,40 @@ namespace FoodOffer.Infrastructure
 
             return true;
 
+        }
+
+        public async Task<bool> DeleteFileAsync(string bucketName, string key)
+        {
+            try
+            {
+                var uri = new Uri(key);
+                key = uri.AbsolutePath.Substring(1);
+
+                var deleteObjectRequest = new DeleteObjectRequest
+                {
+                    BucketName = bucketName,
+                    Key = key
+                };
+
+                var response = await _amazonS3.DeleteObjectAsync(deleteObjectRequest);
+
+                if (response.HttpStatusCode == System.Net.HttpStatusCode.NoContent)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (AmazonS3Exception e)
+            {
+                throw new Exception($"Error encountered on server. Message:'{e.Message}' when deleting an object");
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Error on internal server when deleting an image:'{e.Message}' ", e);
+            }
         }
 
     }
