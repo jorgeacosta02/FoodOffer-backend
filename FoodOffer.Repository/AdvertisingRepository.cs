@@ -97,7 +97,7 @@ namespace FoodOffer.Repository
                                 adv.Price = Convert.ToDouble(reader["adv_price"]);
                                 adv.Description = Convert.ToString(reader["adv_desc"]);
                                 adv.Category = new Category(Convert.ToInt16(reader["cat_cod"]), Convert.ToString(reader["cat_desc"]));
-                                adv.State = new AdvertisingState(Convert.ToChar(reader["ads_cod"]), Convert.ToString(reader["ads_desc"]));
+                                adv.State = new AdvertisingState(Convert.ToInt16(reader["ads_cod"]), Convert.ToString(reader["ads_desc"]));
                                 var img = reader["adi_name"] != DBNull.Value ? true : false;
                                 if(img)
                                     adv.Images.Add(new Image(adv.Id, 1, Convert.ToString(reader["adi_name"]), s3Path + Convert.ToString(reader["adi_path"]), null));

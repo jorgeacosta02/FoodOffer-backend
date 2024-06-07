@@ -49,6 +49,36 @@ namespace FoodOffer.Repository.Mapper
             .ForMember(a => a.adv_update_date, b => b.MapFrom(src => src.UpdateDate))
             .ForMember(a => a.adv_delete_date, b => b.MapFrom(src => src.DeleteDate))
             .ReverseMap();
+
+            CreateMap<Category, Db_Attributes_Category>()
+            .ForMember(a => a.atc_cod, b => b.MapFrom(src => src.Code))
+            .ForMember(a => a.atc_desc, b => b.MapFrom(src => src.Description))
+            .ReverseMap();
+
+            CreateMap<Category, Db_Advertising_Category>()
+            .ForMember(a => a.cat_cod, b => b.MapFrom(src => src.Code))
+            .ForMember(a => a.cat_desc, b => b.MapFrom(src => src.Description))
+            .ReverseMap();
+
+            CreateMap<Category, Db_Advertising_State>()
+            .ForMember(a => a.ads_cod, b => b.MapFrom(src => src.Code))
+            .ForMember(a => a.ads_desc, b => b.MapFrom(src => src.Description))
+            .ReverseMap();
+
+            CreateMap<Category, Db_Commerce_Type>()
+            .ForMember(a => a.cot_cod, b => b.MapFrom(src => src.Code))
+            .ForMember(a => a.cot_desc, b => b.MapFrom(src => src.Description))
+            .ReverseMap();
+
+            CreateMap<Category, Db_Identification_Type>()
+            .ForMember(a => a.ide_cod, b => b.MapFrom(src => src.Code))
+            .ForMember(a => a.ide_desc, b => b.MapFrom(src => src.Description))
+            .ReverseMap();
+
+            CreateMap<Category, Db_User_Type>()
+            .ForMember(a => a.ust_cod, b => b.MapFrom(src => src.Code))
+            .ForMember(a => a.ust_desc, b => b.MapFrom(src => src.Description))
+            .ReverseMap();
         }
     }
 }

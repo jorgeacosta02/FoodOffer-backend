@@ -22,7 +22,7 @@ namespace clasificados.Infraestructure.DbContextConfig.DbModels
         public double adv_price { get; set; }
 
         [ForeignKey("advertising_states")]
-        public char adv_ads_cod { get; set; }
+        public short adv_ads_cod { get; set; }
 
         [ForeignKey("advertising_categories")]
         public short adv_cat_cod { get; set; }

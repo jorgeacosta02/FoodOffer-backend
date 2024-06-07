@@ -58,7 +58,7 @@ namespace FoodOffer.WebAPI.Controllers
                 adv.Description = data["description"];
                 adv.Price = int.Parse(data["price"]);
                 adv.Category.Code = short.Parse(data["category"]);
-                adv.State.Code = 'A';
+                adv.State.Code = 1;
 
                 var images = data.Files.GetFiles("images");
                 foreach (var img in images)
@@ -91,7 +91,7 @@ namespace FoodOffer.WebAPI.Controllers
                 adv.Description = data["description"];
                 adv.Price = int.Parse(data["price"]);
                 adv.Category.Code = short.Parse(data["category"]);
-                adv.State.Code = char.Parse(data["state"]); ;
+                adv.State.Code = short.Parse(data["state"]); ;
 
                 var images = data.Files.GetFiles("images");
 
@@ -117,7 +117,7 @@ namespace FoodOffer.WebAPI.Controllers
 
         [HttpPost]
         [Route("UpdateAdvertisingState")]
-        public IActionResult UpdateAdvertisingState([FromQuery] int id, [FromQuery] char state)
+        public IActionResult UpdateAdvertisingState([FromQuery] int id, [FromQuery] short state)
         {
             try
             {

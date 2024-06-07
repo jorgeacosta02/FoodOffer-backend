@@ -20,10 +20,10 @@ namespace FoodOffer.Model.Models
         public string Email { get; set; }
         public string Password { get; set; }
         public char Type { get; set; }
-        public short Id_Type { get; set; }
+        public short? Id_Type { get; set; }
         public string? Id_Number { get; set; }
-        public string Phone { get; set; }
-        public string Cell_Phone { get; set; }
+        public string? Phone { get; set; }
+        public string? Cell_Phone { get; set; }
         public Address? Address { get; set; }
 
     }

@@ -8,12 +8,12 @@ namespace FoodOffer.Model.Models
 {
     public class AdvertisingState
     {
-        public char Code { get; set; }
+        public short Code { get; set; }
         public string? Description { get; set; }
 
         public AdvertisingState() {}
 
-        public AdvertisingState(char code, string description)
+        public AdvertisingState(short code, string description)
         {
             Code = code;
             Description = description;  

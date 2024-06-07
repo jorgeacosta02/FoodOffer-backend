@@ -1,25 +1,16 @@
 ﻿using FoodOffer.Infrastructure;
 using FoodOffer.Model.Models;
 using FoodOffer.Model.Repositories;
-// using Microsoft.EntityFrameworkCore;, using Microsoft.Extensions.Options;: Estos using importan los espacios de nombres necesarios para trabajar con Entity Framework Core y las opciones de configuración.
-using MySql.Data.MySqlClient; // Este using importa el espacio de nombres necesario para trabajar con MySQL utilizando ADO.NET.
+using MySql.Data.MySqlClient; 
 using System.Text;
 using clasificados.Infraestructure.DbContextConfig.DbModels;
 using AutoMapper;
 
-// Acá se hacen las solicitudes a la base de datos. Una ventaja es poder hacer una sola solicitud con uniones
-// con diferentes tablas relacionadas. Este repository puede ser usado por diferentes services para 
-// extraer la info necesaria.
-
-// using System.Drawing;, using static System.Net.Mime.MediaTypeNames;: Estos using no parecen ser necesarios y podrían ser eliminados.
-
 namespace FoodOffer.Repository
 {
-    public class UserRepository : IUserRepository // Interface del archivo FoodOffer.Model.Repositories que tiene los métodos Client GetUser y Client GetUser2
+    public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _context;
-        // Esta es una instancia del contexto de la base de datos ApplicationDbContext. Se utiliza para interactuar con la base de datos utilizando Entity Framework Core. 
-        // AplicationDbContext es una clase que hereda de DbContex.
         private readonly IDbConecction _session;
         private readonly IMapper _mapper;
         
@@ -37,9 +28,9 @@ namespace FoodOffer.Repository
             User user = null;
 
             var query = new StringBuilder();
-            query.AppendLine("SELECT * FROM client ");
-            query.AppendLine("LEFT JOIN address ON Client_Id = Id ");
-            query.AppendLine("WHERE Id = ? ");
+            query.AppendLine("SELECT * FROM users ");
+            query.AppendLine("LEFT JOIN addresses ON add_ref_id = usr_id AND add_ref_type = 'U' ");
+            query.AppendLine("WHERE usr_id = @Id ");
 
 
             using (var connection = _session.GetConnection())
@@ -61,7 +52,7 @@ namespace FoodOffer.Repository
                                 user.Name = Convert.ToString(reader["Name"]);
                                 user.Password = Convert.ToString(reader["Password"]);
                                 user.Email = Convert.ToString(reader["Email"]);
-                                user.Address = new Model.Models.Address();
+                                user.Address = new Address();
                                 //user.Address.Street = Convert.ToString(reader["Street"]);
                                 //user.Address.Number = Convert.ToInt16(reader["Number"]);
                             }
@@ -86,9 +77,9 @@ namespace FoodOffer.Repository
             var query = new StringBuilder();
             query.AppendLine("SELECT * FROM users ");
             query.AppendLine("LEFT JOIN addresses ON usr_id = add_ref_id AND add_ref_type = 'U' ");
-            query.AppendLine("INNER JOIN countries ON cou_cod = add_cou_cod ");
-            query.AppendLine("INNER JOIN states ON ste_cod = add_ste_cod AND ste_cou_cod = add_cou_cod ");
-            query.AppendLine("INNER JOIN cities ON cit_cod = add_cit_cod AND cit_cou_cod = add_cou_cod AND cit_ste_cod == add_ste_cod ");
+            query.AppendLine("LEFT JOIN countries ON cou_cod = add_cou_cod ");
+            query.AppendLine("LEFT JOIN states ON ste_cod = add_ste_cod AND ste_cou_cod = add_cou_cod ");
+            query.AppendLine("LEFT JOIN cities ON cit_cod = add_cit_cod AND cit_cou_cod = add_cou_cod AND cit_ste_cod = add_ste_cod ");
             query.AppendLine("WHERE usr_mail = ? ");
 
 
@@ -110,6 +101,7 @@ namespace FoodOffer.Repository
                                 user.Id_User = Convert.ToInt16(reader["usr_id"]);
                                 user.Name = Convert.ToString(reader["usr_name"]);
                                 user.Email = Convert.ToString(reader["usr_mail"]);
+                                user.Type = Convert.ToChar(reader["usr_ust_cod"]);
                                 user.Address = new Address();
                                 user.Address.Description = Convert.ToString(reader["add_desc"]);
                                 user.Address.City = new City(Convert.ToInt16(reader["cit_cod"]), Convert.ToString(reader["cit_desc"]));
@@ -142,14 +134,12 @@ namespace FoodOffer.Repository
 
         public User GetUserByEmail(string email)
         {
-            User user = null;
-
             var result = _context.users.FirstOrDefault(u => u.usr_mail == email);
 
-            if(result != null)
-                user = _mapper.Map<User>(result);
+            if(result == null)
+                return _mapper.Map<User>(result);
 
-            return user;
+             return null;
 
         }
 

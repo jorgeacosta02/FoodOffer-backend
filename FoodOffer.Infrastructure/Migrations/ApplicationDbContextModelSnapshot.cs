@@ -30,7 +30,10 @@ namespace FoodOffer.Infrastructure.Migrations
                     b.Property<short>("add_item")
                         .HasColumnType("smallint");
 
-                    b.Property<short>("add_city")
+                    b.Property<short>("add_cit_cod")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("add_cou_cod")
                         .HasColumnType("smallint");
 
                     b.Property<string>("add_desc")
@@ -42,7 +45,7 @@ namespace FoodOffer.Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
 
-                    b.Property<short>("add_state")
+                    b.Property<short>("add_ste_cod")
                         .HasColumnType("smallint");
 
                     b.HasKey("add_ref_id", "add_ref_type", "add_item");
@@ -56,9 +59,8 @@ namespace FoodOffer.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("adv_ads_cod")
-                        .IsRequired()
-                        .HasColumnType("varchar(1)");
+                    b.Property<short>("adv_ads_cod")
+                        .HasColumnType("smallint");
 
                     b.Property<short>("adv_cat_cod")
                         .HasColumnType("smallint");
@@ -150,9 +152,9 @@ namespace FoodOffer.Infrastructure.Migrations
 
             modelBuilder.Entity("clasificados.Infraestructure.DbContextConfig.DbModels.Db_Advertising_State", b =>
                 {
-                    b.Property<string>("ads_cod")
+                    b.Property<short>("ads_cod")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varchar(1)");
+                        .HasColumnType("smallint");
 
                     b.Property<string>("ads_desc")
                         .IsRequired()
@@ -423,9 +425,8 @@ namespace FoodOffer.Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
-                    b.Property<string>("usr_ust_cod")
-                        .IsRequired()
-                        .HasColumnType("varchar(1)");
+                    b.Property<short>("usr_ust_cod")
+                        .HasColumnType("smallint");
 
                     b.HasKey("usr_id");
 
@@ -460,9 +461,9 @@ namespace FoodOffer.Infrastructure.Migrations
 
             modelBuilder.Entity("clasificados.Infraestructure.DbContextConfig.DbModels.Db_User_Type", b =>
                 {
-                    b.Property<string>("ust_cod")
+                    b.Property<short>("ust_cod")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varchar(1)");
+                        .HasColumnType("smallint");
 
                     b.Property<string>("ust_desc")
                         .IsRequired()
