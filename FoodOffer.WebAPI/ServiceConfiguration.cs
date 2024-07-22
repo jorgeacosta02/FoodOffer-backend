@@ -13,18 +13,15 @@ public static class ServiceConfiguration
 {
     public static void ConfigureServices(WebApplicationBuilder builder)
     {
-        // Se obtiene la cadena de la base de daos de la configuración de aplicación en el contenedor de servicios.
         string mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 
-        // Se registra el contexto de la base de datos en el contenedor de servicios.
         builder.Services.AddDbContextPool<ApplicationDbContext>(options => options.UseMySQL(mySqlConnection));
 
         builder.Services.AddAutoMapper(config => {
             config.AddProfile<CustomMapper>();
         }, Assembly.GetExecutingAssembly());
 
-        // Se registra la interfaz IDbConnection y su implementación MySqlConnectionProvider en el contenedor de servicios.
-        // Esta implementación se utiliza para proporcionar una instancia de conexión a la base de datos MySQL.
+
         builder.Services.AddScoped<IDbConecction>(_ =>
         {
             return new MySqlConnectionProvider(mySqlConnection);
@@ -60,6 +57,23 @@ public static class ServiceConfiguration
             return new AdvertisingRepository(connection, context, mapper);
         });
 
+        builder.Services.AddScoped<IImagesRepository, ImagesRepository>(provider =>
+        {
+            var connection = provider.GetRequiredService<IDbConecction>();
+            var context = provider.GetRequiredService<ApplicationDbContext>();
+            var mapper = provider.GetRequiredService<IMapper>();
+            return new ImagesRepository(connection, context, mapper);
+        });
+
+        builder.Services.AddScoped<ICategoryRepository, CategoryRepository>(provider =>
+        {
+            var connection = provider.GetRequiredService<IDbConecction>();
+            var context = provider.GetRequiredService<ApplicationDbContext>();
+            var mapper = provider.GetRequiredService<IMapper>();
+            return new CategoryRepository(connection, context, mapper);
+        });
+
+
         #endregion
 
         #region Services
@@ -72,6 +86,20 @@ public static class ServiceConfiguration
             var s3 = provider.GetRequiredService<AmazonS3Service>();
 
             return new AdvertisingService(advertisingRepository, imagesRepository, s3);
+        });
+
+        builder.Services.AddScoped<IUserService, UserService>(provider =>
+        {
+            var userRepository = provider.GetRequiredService<IUserRepository>();
+            var loginRepository = provider.GetRequiredService<ILoginRepository>();
+            return new UserService(userRepository, loginRepository);
+        });
+
+        builder.Services.AddScoped<ICategoryService, CategoryService>(provider =>
+        {
+            var categoryRepository = provider.GetRequiredService<ICategoryRepository>();
+
+            return new CategoryService(categoryRepository);
         });
 
         #endregion

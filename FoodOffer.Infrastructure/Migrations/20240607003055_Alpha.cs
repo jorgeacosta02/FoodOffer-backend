@@ -21,8 +21,9 @@ namespace FoodOffer.Infrastructure.Migrations
                     add_ref_type = table.Column<string>(type: "varchar(1)", nullable: false),
                     add_item = table.Column<short>(type: "smallint", nullable: false),
                     add_desc = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
-                    add_city = table.Column<short>(type: "smallint", nullable: false),
-                    add_state = table.Column<short>(type: "smallint", nullable: false),
+                    add_cit_cod = table.Column<short>(type: "smallint", nullable: false),
+                    add_ste_cod = table.Column<short>(type: "smallint", nullable: false),
+                    add_cou_cod = table.Column<short>(type: "smallint", nullable: false),
                     add_obs = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
@@ -78,7 +79,8 @@ namespace FoodOffer.Infrastructure.Migrations
                 name: "advertising_states",
                 columns: table => new
                 {
-                    ads_cod = table.Column<string>(type: "varchar(1)", nullable: false),
+                    ads_cod = table.Column<short>(type: "smallint", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     ads_desc = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                 },
                 constraints: table =>
@@ -95,7 +97,7 @@ namespace FoodOffer.Infrastructure.Migrations
                     ats_day = table.Column<short>(type: "smallint", nullable: false),
                     ats_start_1 = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     ats_end_1 = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    ats_nextday_1 = table.Column<string>(type: "varchar(1)", nullable: false),
+                    ats_nextday_1 = table.Column<string>(type: "varchar(1)", nullable: true),
                     ats_start_2 = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     ats_end_2 = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     ats_nextday_2 = table.Column<string>(type: "varchar(1)", nullable: true)
@@ -116,11 +118,11 @@ namespace FoodOffer.Infrastructure.Migrations
                     adv_title = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false),
                     adv_desc = table.Column<string>(type: "longtext", nullable: false),
                     adv_price = table.Column<double>(type: "double", nullable: false),
-                    adv_ads_cod = table.Column<string>(type: "varchar(1)", nullable: false),
+                    adv_ads_cod = table.Column<short>(type: "smallint", nullable: false),
                     adv_cat_cod = table.Column<short>(type: "smallint", nullable: false),
-                    adv_create_data = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    adv_delete_data = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    adv_update_data = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    adv_create_date = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    adv_delete_date = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    adv_update_date = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -163,8 +165,9 @@ namespace FoodOffer.Infrastructure.Migrations
                 {
                     cit_cod = table.Column<short>(type: "smallint", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    cit_desc = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     cit_ste_cod = table.Column<short>(type: "smallint", nullable: false),
-                    cit_desc = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                    cit_cou_cod = table.Column<short>(type: "smallint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -220,6 +223,20 @@ namespace FoodOffer.Infrastructure.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "countries",
+                columns: table => new
+                {
+                    cou_cod = table.Column<short>(type: "smallint", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    cou_desc = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_countries", x => x.cou_cod);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Db_Commerce_Image",
                 columns: table => new
                 {
@@ -254,7 +271,8 @@ namespace FoodOffer.Infrastructure.Migrations
                 {
                     ste_cod = table.Column<short>(type: "smallint", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    ste_desc = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                    ste_desc = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
+                    ste_cou_cod = table.Column<short>(type: "smallint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -282,7 +300,8 @@ namespace FoodOffer.Infrastructure.Migrations
                 name: "user_types",
                 columns: table => new
                 {
-                    ust_cod = table.Column<string>(type: "varchar(1)", nullable: false),
+                    ust_cod = table.Column<short>(type: "smallint", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     ust_desc = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                 },
                 constraints: table =>
@@ -303,7 +322,7 @@ namespace FoodOffer.Infrastructure.Migrations
                     usr_mail = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
                     usr_phone = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: true),
                     usr_cell_phone = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: true),
-                    usr_ust_cod = table.Column<string>(type: "varchar(1)", nullable: false)
+                    usr_ust_cod = table.Column<short>(type: "smallint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -352,6 +371,9 @@ namespace FoodOffer.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "commerces");
+
+            migrationBuilder.DropTable(
+                name: "countries");
 
             migrationBuilder.DropTable(
                 name: "Db_Commerce_Image");

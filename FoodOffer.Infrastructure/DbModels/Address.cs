@@ -18,8 +18,9 @@ namespace clasificados.Infraestructure.DbContextConfig.DbModels
         public short add_item { get; set; }
         [MaxLength(255)]
         public string add_desc { get; set; }
-        public short add_city { get; set; }
-        public short add_state { get; set; }
+        public short add_cit_cod { get; set; }
+        public short add_ste_cod { get; set; }
+        public short add_cou_cod { get; set; }
         [MaxLength(255)]
         public string? add_obs { get; set; }
 

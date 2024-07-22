@@ -13,9 +13,14 @@ namespace clasificados.Infraestructure.DbContextConfig.DbModels
         [Key]
         public short cit_cod { get; set; }
 
-        [ForeignKey("states")]
-        public short cit_ste_cod { get; set; }
         [MaxLength(50)]
         public string cit_desc { get; set; }
+
+        [ForeignKey("states")]
+        public short cit_ste_cod { get; set; }
+
+        [ForeignKey("countries")]
+        public short cit_cou_cod { get; set; }
+
     }
 }

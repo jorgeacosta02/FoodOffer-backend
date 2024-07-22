@@ -11,7 +11,7 @@ namespace clasificados.Infraestructure.DbContextConfig.DbModels
     public class Db_User_Type
     {
         [Key]
-        public char ust_cod { get; set; }
+        public short ust_cod { get; set; }
         [MaxLength(20)]
         public string ust_desc { get; set; }
     }

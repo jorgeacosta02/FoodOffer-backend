@@ -11,7 +11,7 @@ namespace clasificados.Infraestructure.DbContextConfig.DbModels
     public class Db_Advertising_State
     {
         [Key]
-        public char ads_cod { get; set; }
+        public short ads_cod { get; set; }
         [MaxLength(20)]
         public string ads_desc { get; set; }
     }

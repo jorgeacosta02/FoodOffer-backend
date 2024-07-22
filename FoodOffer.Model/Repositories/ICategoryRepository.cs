@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace FoodOffer.Model.Repositories
 {
-    public interface IImagesRepository
+    public interface ICategoryRepository
     {
-        bool SaveImageData(Image image, char type);
-        bool DeleteImageData(int advId, short item);
+        short InsertCategory(Category category, short type);
+        bool UpdateCategory(Category category, short type);
     }
 }

@@ -46,17 +46,15 @@ namespace FoodOffer.Repository
         public bool UpdateLoginData(User user)
         {
             var flag = false;
-            var data = new Db_User_Login_Data();
-            data.uld_email = user.Email;
-            data.uld_pwd = user.Password;
 
-            var existingUser = _context.user_login_data.Where(log => log.uld_usr_id == user.Id_User);
+            var existingUser = _context.user_login_data.FirstOrDefault(log => log.uld_usr_id == user.Id_User);
 
             if (existingUser != null)
             {
-                _mapper.Map(data, existingUser);
-                _context.SaveChanges();
-                flag = true;
+                _mapper.Map(user, existingUser);
+
+                flag = _context.SaveChanges() == 1;
+
             }
             else
             {
