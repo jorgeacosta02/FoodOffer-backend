@@ -19,6 +19,11 @@ namespace FoodOffer.AppServices
             _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
         }
 
+        public List<Category> GetCategories(short type)
+        {
+            return _categoryRepository.GetCategories(type);
+        }
+
         public Category AddCategory(Category cat, short type)
         {
             cat.Code = _categoryRepository.InsertCategory(cat, type);

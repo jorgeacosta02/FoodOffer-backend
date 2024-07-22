@@ -136,7 +136,7 @@ namespace FoodOffer.Repository
         {
             var result = _context.users.FirstOrDefault(u => u.usr_mail == email);
 
-            if(result == null)
+            if(result != null)
                 return _mapper.Map<User>(result);
 
              return null;

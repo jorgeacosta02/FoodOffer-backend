@@ -40,10 +40,16 @@ namespace FoodOffer.Infrastructure
 
         public DbSet<Db_Commerce_Type> commerce_types { get; set; }
 
+        public DbSet<Db_Commerce_Image> commerce_images { get; set; }
+
         public DbSet<Db_Identification_Type> identification_types { get; set; }
 
-        public DbSet<Db_City> cities { get; set; }
+        public DbSet<Db_Priority_level> priority_levels { get; set; }
 
+        public DbSet<Db_Advertising_address> advertisings_address { get; set; }
+
+
+        public DbSet<Db_City> cities { get; set; }
         public DbSet<Db_State> states { get; set; }
         public DbSet<Db_Country> countries { get; set; }
 
