@@ -16,6 +16,9 @@ namespace clasificados.Infraestructure.DbContextConfig.DbModels
         public char add_ref_type { get; set; }
         [Key]
         public short add_item { get; set; }
+        [MaxLength(50)]
+        public string add_name { get; set; }
+
         [MaxLength(255)]
         public string add_desc { get; set; }
         public short add_cit_cod { get; set; }

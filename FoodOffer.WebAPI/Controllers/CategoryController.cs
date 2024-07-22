@@ -18,13 +18,29 @@ namespace FoodOffer.WebAPI.Controllers
             _categoryService = categoryService ?? throw new ArgumentNullException(nameof(categoryService));
         }
 
-        [HttpPost]
-        [Route("add")]
-        public IActionResult AddCategory([FromBody] Category data, [FromQuery] short type)
+        [HttpGet]
+        [Route("get")]
+        public IActionResult GetCategories([FromQuery] short type)
         {
             try
             {
-                Category category = _categoryService.AddCategory(data, type);
+                var categories = _categoryService.GetCategories(type);
+
+                return Ok(categories);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("add")]
+        public IActionResult AddCategory([FromBody] Category data)
+        {
+            try
+            {
+                Category category = _categoryService.AddCategory(data, data.Type);
 
                 return Ok(category);
             }

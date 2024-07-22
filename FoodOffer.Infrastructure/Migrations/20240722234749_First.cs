@@ -6,7 +6,7 @@ using MySql.EntityFrameworkCore.Metadata;
 
 namespace FoodOffer.Infrastructure.Migrations
 {
-    public partial class Alpha : Migration
+    public partial class First : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,6 +20,7 @@ namespace FoodOffer.Infrastructure.Migrations
                     add_ref_id = table.Column<int>(type: "int", nullable: false),
                     add_ref_type = table.Column<string>(type: "varchar(1)", nullable: false),
                     add_item = table.Column<short>(type: "smallint", nullable: false),
+                    add_name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     add_desc = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
                     add_cit_cod = table.Column<short>(type: "smallint", nullable: false),
                     add_ste_cod = table.Column<short>(type: "smallint", nullable: false),
@@ -120,6 +121,7 @@ namespace FoodOffer.Infrastructure.Migrations
                     adv_price = table.Column<double>(type: "double", nullable: false),
                     adv_ads_cod = table.Column<short>(type: "smallint", nullable: false),
                     adv_cat_cod = table.Column<short>(type: "smallint", nullable: false),
+                    adv_prl_cod = table.Column<short>(type: "smallint", nullable: false),
                     adv_create_date = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     adv_delete_date = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     adv_update_date = table.Column<DateTime>(type: "datetime(6)", nullable: false)
@@ -127,6 +129,21 @@ namespace FoodOffer.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_advertisings", x => x.adv_id);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "advertisings_address",
+                columns: table => new
+                {
+                    aad_adv_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    aad_adv_com_id = table.Column<int>(type: "int", nullable: false),
+                    add_add_item = table.Column<short>(type: "smallint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_advertisings_address", x => x.aad_adv_id);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -190,6 +207,21 @@ namespace FoodOffer.Infrastructure.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "commerce_images",
+                columns: table => new
+                {
+                    coi_com_id = table.Column<int>(type: "int", nullable: false),
+                    coi_item = table.Column<short>(type: "smallint", nullable: false),
+                    coi_name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
+                    coi_path = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_commerce_images", x => new { x.coi_com_id, x.coi_item });
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "commerce_types",
                 columns: table => new
                 {
@@ -237,21 +269,6 @@ namespace FoodOffer.Infrastructure.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Db_Commerce_Image",
-                columns: table => new
-                {
-                    coi_com_id = table.Column<int>(type: "int", nullable: false),
-                    coi_item = table.Column<short>(type: "smallint", nullable: false),
-                    coi_name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
-                    coi_path = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Db_Commerce_Image", x => new { x.coi_com_id, x.coi_item });
-                })
-                .Annotation("MySQL:Charset", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "identification_types",
                 columns: table => new
                 {
@@ -262,6 +279,20 @@ namespace FoodOffer.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_identification_types", x => x.ide_cod);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "priority_levels",
+                columns: table => new
+                {
+                    prl_cod = table.Column<short>(type: "smallint", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    prl_desc = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_priority_levels", x => x.prl_cod);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -355,6 +386,9 @@ namespace FoodOffer.Infrastructure.Migrations
                 name: "advertisings");
 
             migrationBuilder.DropTable(
+                name: "advertisings_address");
+
+            migrationBuilder.DropTable(
                 name: "attribute_categories");
 
             migrationBuilder.DropTable(
@@ -367,6 +401,9 @@ namespace FoodOffer.Infrastructure.Migrations
                 name: "commerce_attributes");
 
             migrationBuilder.DropTable(
+                name: "commerce_images");
+
+            migrationBuilder.DropTable(
                 name: "commerce_types");
 
             migrationBuilder.DropTable(
@@ -376,10 +413,10 @@ namespace FoodOffer.Infrastructure.Migrations
                 name: "countries");
 
             migrationBuilder.DropTable(
-                name: "Db_Commerce_Image");
+                name: "identification_types");
 
             migrationBuilder.DropTable(
-                name: "identification_types");
+                name: "priority_levels");
 
             migrationBuilder.DropTable(
                 name: "states");

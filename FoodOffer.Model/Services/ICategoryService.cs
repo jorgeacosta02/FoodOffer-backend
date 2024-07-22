@@ -9,6 +9,7 @@ namespace FoodOffer.Model.Services
 {
     public interface ICategoryService
     {
+        List<Category> GetCategories(short type);
         Category AddCategory(Category cat, short type);
         Category UpdateCategory(Category cat, short type);
     }

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FoodOffer.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240607003055_Alpha")]
-    partial class Alpha
+    [Migration("20240722234749_First")]
+    partial class First
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -42,6 +42,11 @@ namespace FoodOffer.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
+
+                    b.Property<string>("add_name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("add_obs")
                         .HasMaxLength(255)
@@ -83,6 +88,9 @@ namespace FoodOffer.Infrastructure.Migrations
                     b.Property<double>("adv_price")
                         .HasColumnType("double");
 
+                    b.Property<short>("adv_prl_cod")
+                        .HasColumnType("smallint");
+
                     b.Property<string>("adv_title")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -94,6 +102,23 @@ namespace FoodOffer.Infrastructure.Migrations
                     b.HasKey("adv_id");
 
                     b.ToTable("advertisings");
+                });
+
+            modelBuilder.Entity("clasificados.Infraestructure.DbContextConfig.DbModels.Db_Advertising_address", b =>
+                {
+                    b.Property<int>("aad_adv_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("aad_adv_com_id")
+                        .HasColumnType("int");
+
+                    b.Property<short>("add_add_item")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("aad_adv_id");
+
+                    b.ToTable("advertisings_address");
                 });
 
             modelBuilder.Entity("clasificados.Infraestructure.DbContextConfig.DbModels.Db_Advertising_Attribute", b =>
@@ -326,7 +351,7 @@ namespace FoodOffer.Infrastructure.Migrations
 
                     b.HasKey("coi_com_id", "coi_item");
 
-                    b.ToTable("Db_Commerce_Image");
+                    b.ToTable("commerce_images");
                 });
 
             modelBuilder.Entity("clasificados.Infraestructure.DbContextConfig.DbModels.Db_Commerce_Type", b =>
@@ -375,6 +400,22 @@ namespace FoodOffer.Infrastructure.Migrations
                     b.HasKey("ide_cod");
 
                     b.ToTable("identification_types");
+                });
+
+            modelBuilder.Entity("clasificados.Infraestructure.DbContextConfig.DbModels.Db_Priority_level", b =>
+                {
+                    b.Property<short>("prl_cod")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("prl_desc")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("prl_cod");
+
+                    b.ToTable("priority_levels");
                 });
 
             modelBuilder.Entity("clasificados.Infraestructure.DbContextConfig.DbModels.Db_State", b =>

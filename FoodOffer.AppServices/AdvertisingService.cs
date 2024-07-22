@@ -71,6 +71,7 @@ namespace FoodOffer.AppServices
                         img.ReferenceId = advertising.Id;
                         img.Name = advertising.Title;
                         img.Path = $"com_id_{advertising.Commerce.Id}/adv_id_{advertising.Id}-adi_item_{img.Item}{extension}";
+
                         if (!_s3Service.UploadFileAsync(bucketName, img.Path, img.ImageFile).Result)
                             throw new Exception("Error saving advertising image");
 
@@ -98,7 +99,7 @@ namespace FoodOffer.AppServices
             return _advertisingRepository.UpdateAdvertisingState(advertising);
         }
 
-            public bool DeleteAdvertising(int id)
+         public bool DeleteAdvertising(int id)
         {
             return _advertisingRepository.DeleteAdvertisingData(id);
         }

@@ -9,6 +9,7 @@ namespace FoodOffer.Model.Repositories
 {
     public interface ICategoryRepository
     {
+        List<Category> GetCategories(short type);
         short InsertCategory(Category category, short type);
         bool UpdateCategory(Category category, short type);
     }

@@ -8,6 +8,7 @@ namespace FoodOffer.Model.Models
 {
     public class Category
     {
+        public short Type { get; set; }
         public short Code { get; set; }
         public string? Description { get; set; }
 

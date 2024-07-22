@@ -3,6 +3,7 @@ using clasificados.Infraestructure.DbContextConfig.DbModels;
 using FoodOffer.Infrastructure;
 using FoodOffer.Model.Models;
 using FoodOffer.Model.Repositories;
+using MySqlX.XDevAPI.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,11 +25,50 @@ namespace FoodOffer.Repository
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
+        public List<Category> GetCategories(short type)
+        {
+            object result = null;
+
+            switch (type)
+            {
+                case 1:
+                    result = _context.attribute_categories.ToList();
+                    break;
+
+                case 2:
+                    result = _context.advertising_categories.ToList();
+                    break;
+
+                case 3:
+                    result = _context.advertising_states.ToList();
+                    break;
+
+                case 4:
+                    result = _context.commerce_types.ToList();
+                    break;
+
+                case 5:
+                    result = _context.identification_types.ToList();
+                    break;
+
+                case 6:
+                    result = _context.user_types.ToList();
+                    break;
+
+                default:
+
+                    throw new ArgumentException("Invalid type", nameof(type));
+            }
+
+            return _mapper.Map<List<Category>>(result);
+
+        }
+
 
         public short InsertCategory(Category category, short type)
         {
 
-            switch (type)
+            switch (category.Type)
             {
                 case 1:
                     var data1 = _mapper.Map<Db_Attributes_Category>(category);

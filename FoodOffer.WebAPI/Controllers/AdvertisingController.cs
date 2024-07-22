@@ -17,11 +17,11 @@ namespace FoodOffer.WebAPI.Controllers
 
         public IActionResult GetAdvertising([FromQuery] short advId)
         {
-            var user = _advertisingService.GetAdvertising(advId);
+            var adv = _advertisingService.GetAdvertising(advId);
 
-            if (user != null)
+            if (adv != null)
             {
-                return Ok(user);
+                return Ok(adv);
             }
             else
             {
@@ -60,13 +60,16 @@ namespace FoodOffer.WebAPI.Controllers
                 adv.Category.Code = short.Parse(data["category"]);
                 adv.State.Code = 1;
 
+                short item = 1;
+
                 var images = data.Files.GetFiles("images");
                 foreach (var img in images)
                 {
                     var newImg = new Image();
                     newImg.ImageFile = img;
-                    newImg.Item = 1; //TODO -- short.Parse(img.FileName.Split("-")[0]);
+                    newImg.Item = item; //TODO -- short.Parse(img.FileName.Split("-")[0]);
                     adv.Images.Add(newImg);
+                    item++;
                 }
 
                 return Ok(_advertisingService.CreateAdvertising(adv));
@@ -95,14 +98,17 @@ namespace FoodOffer.WebAPI.Controllers
 
                 var images = data.Files.GetFiles("images");
 
-                if(images != null && images.Count > 0)
+                short item = 1;
+
+                if (images != null && images.Count > 0)
                 {
                     foreach (var img in images)
                     {
                         var newImg = new Image();
                         newImg.ImageFile = img;
-                        newImg.Item = 1; //TODO -- short.Parse(img.FileName.Split("-")[0]);
+                        newImg.Item = item; //TODO -- short.Parse(img.FileName.Split("-")[0]);
                         adv.Images.Add(newImg);
+                        item++;
                     }
                 }
 

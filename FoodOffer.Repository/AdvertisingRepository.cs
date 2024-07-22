@@ -53,7 +53,7 @@ namespace FoodOffer.Repository
             query.AppendLine("AND adv_ads_cod = 'A' ");
             query.AppendLine("AND adv_delete_data IS NULL ");
 
-            if (filter.category != null && filter.category != 0)
+            if (filter.category != 0)
             {
                 query.AppendLine($"AND adv_cat_cod = @category ");
             }
