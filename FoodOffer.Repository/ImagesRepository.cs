@@ -94,7 +94,7 @@ namespace FoodOffer.Repository
                                 adv.Title = Convert.ToString(reader["adv_title"]);
                                 adv.Price = Convert.ToDouble(reader["adv_price"]);
                                 adv.Description = Convert.ToString(reader["adv_desc"]);
-                                adv.Category = new Category(Convert.ToInt16(reader["cat_cod"]), Convert.ToString(reader["cat_desc"]));
+                                adv.CategoryCode = Convert.ToInt16(reader["cat_cod"]);
                                 advertisings.Add(adv);
                             }
                         }

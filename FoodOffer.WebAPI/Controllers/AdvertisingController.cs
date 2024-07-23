@@ -57,18 +57,21 @@ namespace FoodOffer.WebAPI.Controllers
                 adv.Title = data["title"];
                 adv.Description = data["description"];
                 adv.Price = int.Parse(data["price"]);
-                adv.Category.Code = short.Parse(data["category"]);
-                adv.State.Code = 1;
+                adv.CategoryCode = short.Parse(data["category"]);
+                adv.PriorityLevel = short.Parse(data["priority"]);
+                adv.StateCode = 1;
 
                 short item = 1;
 
                 var images = data.Files.GetFiles("images");
+
                 foreach (var img in images)
                 {
-                    var newImg = new Image();
-                    newImg.ImageFile = img;
-                    newImg.Item = item; //TODO -- short.Parse(img.FileName.Split("-")[0]);
-                    adv.Images.Add(newImg);
+                    var newImage = new Image();
+                    newImage.ImageFile = img;
+                    newImage.Item = item;
+                    newImage.Name = adv.Title;
+                    adv.Images.Add(newImage);
                     item++;
                 }
 
@@ -93,8 +96,8 @@ namespace FoodOffer.WebAPI.Controllers
                 adv.Title = data["title"];
                 adv.Description = data["description"];
                 adv.Price = int.Parse(data["price"]);
-                adv.Category.Code = short.Parse(data["category"]);
-                adv.State.Code = short.Parse(data["state"]); ;
+                adv.CategoryCode = short.Parse(data["category"]);
+                adv.StateCode = short.Parse(data["state"]); ;
 
                 var images = data.Files.GetFiles("images");
 
@@ -129,7 +132,7 @@ namespace FoodOffer.WebAPI.Controllers
             {
                 var adv = new Advertising();
                 adv.Id = id;
-                adv.State.Code = state;
+                adv.StateCode = state;
 
                 return Ok(_advertisingService.UpdateAdvertisingState(adv));
             }

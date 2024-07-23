@@ -48,6 +48,8 @@ namespace FoodOffer.AppServices
 
                 if(!_imagesRepository.SaveImageData(img, 'A'))
                     throw new Exception("Error saving advertising image data");
+
+                img.ImageFile = null;
             }
 
             return advertising;

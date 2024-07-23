@@ -47,11 +47,16 @@ namespace FoodOffer.Repository
             query.AppendLine("INNER JOIN advertisings ON adv_id = ats_adv_id ");
             query.AppendLine("INNER JOIN advertising_categories ON cat_cod = adv_cat_cod ");
             query.AppendLine("INNER JOIN advertising_states ON ads_cod = adv_ads_cod ");
+            query.AppendLine("INNER JOIN commerces ON com_id = adv_com_id ");
+            query.AppendLine("INNER JOIN addresses ON add_ref_id = com_id AND add_ref_type = 'C' ");
+            query.AppendLine("INNER JOIN cities ON cit_cod = add_cit_cod ");
+            query.AppendLine("INNER JOIN states ON ste_cod = add_ste_cod ");
+            query.AppendLine("INNER JOIN countries ON cou_cod = add_cou_cod ");
             query.AppendLine("LEFT JOIN advertising_attributes ON ada_adv_id = adv_id ");
             query.AppendLine("LEFT JOIN advertising_images ON adi_adv_id = adv_id AND adi_item = 1 ");
             query.AppendLine("WHERE ats_day IN (" + days + ") ");
-            query.AppendLine("AND adv_ads_cod = 'A' ");
-            query.AppendLine("AND adv_delete_data IS NULL ");
+            query.AppendLine("AND adv_ads_cod = 1 ");
+            query.AppendLine("AND adv_delete_date IS NULL ");
 
             if (filter.category != 0)
             {
@@ -96,8 +101,24 @@ namespace FoodOffer.Repository
                                 adv.Title = Convert.ToString(reader["adv_title"]);
                                 adv.Price = Convert.ToDouble(reader["adv_price"]);
                                 adv.Description = Convert.ToString(reader["adv_desc"]);
-                                adv.Category = new Category(Convert.ToInt16(reader["cat_cod"]), Convert.ToString(reader["cat_desc"]));
-                                adv.State = new AdvertisingState(Convert.ToInt16(reader["ads_cod"]), Convert.ToString(reader["ads_desc"]));
+                                adv.CategoryCode = Convert.ToInt16(reader["cat_cod"]);
+                                adv.StateCode = Convert.ToInt16(reader["ads_cod"]);
+                                adv.PriorityLevel = Convert.ToInt16(reader["adv_prl_cod"]);
+                                adv.Commerce = new Commerce();
+                                adv.Commerce.Id = Convert.ToInt16(reader["com_id"]);
+                                adv.Commerce.Name = Convert.ToString(reader["com_name"]);
+                                var address = new Address();
+                                address.Name = Convert.ToString(reader["add_name"]);
+                                address.Ref_Type = Convert.ToChar(reader["add_ref_type"]);
+                                address.Description = Convert.ToString(reader["add_desc"]);
+                                address.City.Code = Convert.ToInt16(reader["cit_cod"]);
+                                address.City.Description = Convert.ToString(reader["cit_desc"]);
+                                address.State.Code = Convert.ToInt16(reader["ste_cod"]);
+                                address.State.Description = Convert.ToString(reader["ste_desc"]);
+                                address.Country.Code = Convert.ToInt16(reader["cou_cod"]);
+                                address.Country.Description = Convert.ToString(reader["cou_desc"]);
+                                adv.Commerce.Addresses.Add(address);
+
                                 var img = reader["adi_name"] != DBNull.Value ? true : false;
                                 if(img)
                                     adv.Images.Add(new Image(adv.Id, 1, Convert.ToString(reader["adi_name"]), s3Path + Convert.ToString(reader["adi_path"]), null));
@@ -129,15 +150,25 @@ namespace FoodOffer.Repository
 
         public int SaveAdvertisingData(Advertising advertising)
         {
-            advertising.CreationDate = DateTime.Now;
-            advertising.UpdateDate = DateTime.Now;
-            advertising.DeleteDate = null;
-            var data = _mapper.Map<Db_Advertising>(advertising);
+            try
+            {
+                advertising.CreationDate = DateTime.Now;
+                advertising.UpdateDate = DateTime.Now;
+                advertising.DeleteDate = null;
+                
+                var data = _mapper.Map<Db_Advertising>(advertising);
 
-            var result = _context.advertisings.Add(data);
-            if (_context.SaveChanges() == 1)
-                return data.adv_id;
-            return 0;
+                _context.advertisings.Add(data);
+                
+                var id = _context.SaveChanges() == 1 ? data.adv_id : 0;
+
+                return id;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("Error saving adversiting data", ex);
+            }
+
         }
 
         public bool UpdateAdvertisingData(Advertising advertising)
@@ -161,7 +192,7 @@ namespace FoodOffer.Repository
                 throw new Exception($"No fue posible encontrar aviso con Id: {advertising.Id}");
 
             existingAdv.adv_update_date = DateTime.Now;
-            existingAdv.adv_ads_cod = advertising.State.Code;
+            existingAdv.adv_ads_cod = advertising.StateCode;
             return _context.SaveChanges() == 1;
 
         }
