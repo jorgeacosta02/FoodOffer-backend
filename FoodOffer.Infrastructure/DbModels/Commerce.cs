@@ -16,6 +16,8 @@ namespace clasificados.Infraestructure.DbContextConfig.DbModels
 
         [ForeignKey("users")]
         public int com_usr_id { get; set; }
+        [MaxLength(100)]
+        public string? com_name { get; set; }
 
         [ForeignKey("commerce_types")]
         public short com_cot_cod { get; set; }

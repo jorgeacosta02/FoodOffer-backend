@@ -10,15 +10,21 @@ namespace FoodOffer.Model.Models
     public class Commerce
     {
         public int Id { get; set; }
-        public int Owner_Id { get; set; }
-        public int Name { get; set; }
-        public Address Address { get; set; }
+        public int OwnerId { get; set; }
+        public string Name { get; set; }
+        public List<Address> Addresses { get; set; }
         public List<Attribute> Attributes { get; set; }
         public short Type { get; set; }
         public string? Mail { get; set; }
         public string? Phone { get; set; }
-        public string? Cell_Phone { get; set; }
-        public string? Web_Url { get; set; }
+        public string? CellPhone { get; set; }
+        public string? WebUrl { get; set; }
         public Image? Logo { get;}
+
+        public Commerce()
+        {
+            Addresses = new List<Address>();
+            Attributes = new List<Attribute>();
+        }
     }
 }

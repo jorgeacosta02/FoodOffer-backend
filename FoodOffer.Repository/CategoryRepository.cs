@@ -168,7 +168,7 @@ namespace FoodOffer.Repository
                 throw new Exception($"No fue posible encontrar aviso con Id: {advertising.Id}");
 
             existingAdv.adv_update_date = DateTime.Now;
-            existingAdv.adv_ads_cod = advertising.State.Code;
+            existingAdv.adv_ads_cod = advertising.StateCode;
             return _context.SaveChanges() == 1;
 
         }
