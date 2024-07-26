@@ -31,7 +31,7 @@ namespace FoodOffer.WebAPI.Controllers
 
         [HttpPost]
         [Route("GetAdvertisings")]
-        public IActionResult GetAdvertisings([FromBody] Filter filter)
+        public IActionResult GetAdvertisings([FromBody] AdvFilter filter)
         {
             var advs = _advertisingService.GetAdvertisings(filter);
 

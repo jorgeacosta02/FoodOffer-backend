@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FoodOffer.Model.Models
 {
-    public class Filter
+    public class AdvFilter
     {
         public List<short> attributes { get; set; }
 

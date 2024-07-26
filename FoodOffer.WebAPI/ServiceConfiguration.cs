@@ -73,6 +73,22 @@ public static class ServiceConfiguration
             return new CategoryRepository(connection, context, mapper);
         });
 
+        builder.Services.AddScoped<IAddressRepository, AddressRepository>(provider =>
+        {
+            var connection = provider.GetRequiredService<IDbConecction>();
+            var context = provider.GetRequiredService<ApplicationDbContext>();
+            var mapper = provider.GetRequiredService<IMapper>();
+            return new AddressRepository(connection, context, mapper);
+        });
+
+        builder.Services.AddScoped<ICommerceRepository, CommerceRepository>(provider =>
+        {
+            var connection = provider.GetRequiredService<IDbConecction>();
+            var context = provider.GetRequiredService<ApplicationDbContext>();
+            var mapper = provider.GetRequiredService<IMapper>();
+            return new CommerceRepository(connection, context, mapper);
+        });
+
 
         #endregion
 
@@ -100,6 +116,23 @@ public static class ServiceConfiguration
             var categoryRepository = provider.GetRequiredService<ICategoryRepository>();
 
             return new CategoryService(categoryRepository);
+        });
+
+        builder.Services.AddScoped<IAddressService, AddressService>(provider =>
+        {
+            var addressRepository = provider.GetRequiredService<IAddressRepository>();
+            var loginRepository = provider.GetRequiredService<ILoginRepository>();
+            return new AddressService(addressRepository, loginRepository);
+        });
+
+        builder.Services.AddScoped<ICommerceService, CommerceService>(provider =>
+        {
+            var advRepository = provider.GetRequiredService<IAdvertisingRepository>();
+            var imgRepository = provider.GetRequiredService<IImagesRepository>();
+            var comRepository = provider.GetRequiredService<ICommerceRepository>();
+            var addressRepository = provider.GetRequiredService<IAddressRepository>();
+            var s3 = provider.GetRequiredService<AmazonS3Service>();
+            return new CommerceService(advRepository, imgRepository, comRepository, addressRepository, s3);
         });
 
         #endregion

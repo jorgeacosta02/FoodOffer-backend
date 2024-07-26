@@ -6,36 +6,40 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace FoodOffer.AppServices
 {
-    public class AdvertisingService: IAdvertisingService
+    public class CommerceService: ICommerceService
     {
         private readonly IAdvertisingRepository _advertisingRepository;
         private readonly IImagesRepository _imagesRepository;
+        private readonly ICommerceRepository _commerceRepository;
+        private readonly IAddressRepository _addressRepository;
         private readonly AmazonS3Service _s3Service;
         private static string bucketName = "clickfood";
-        public AdvertisingService(IAdvertisingRepository advertisingRepository, IImagesRepository imagesRepository, AmazonS3Service s3Service) 
+        public CommerceService(IAdvertisingRepository advertisingRepository, 
+            IImagesRepository imagesRepository,
+            ICommerceRepository commerceRepository,
+            IAddressRepository addressRepository, AmazonS3Service s3Service) 
         {
             _advertisingRepository = advertisingRepository ?? throw new ArgumentNullException(nameof(advertisingRepository));
             _imagesRepository = imagesRepository ?? throw new ArgumentNullException(nameof(imagesRepository));
+            _commerceRepository = commerceRepository ?? throw new ArgumentNullException(nameof(commerceRepository));
+            _addressRepository = addressRepository ?? throw new ArgumentNullException(nameof(addressRepository));
             _s3Service = s3Service ?? throw new ArgumentNullException(nameof(s3Service));
         }
 
-        public List<Advertising> GetAdvertisings(AdvFilter filter)
+        public Commerce GetCommerce(int comID)
         {
-            return _advertisingRepository.GetAdvertisings(filter);
+            return _commerceRepository.GetCommerce(comID);
         }
 
-        public Advertising GetAdvertising(int Id) 
+        public Commerce CompleteCommerceData(Commerce com) 
         {
-            Advertising adv = _advertisingRepository.GetAdvertising(Id);
+            com.Addresses = _addressRepository.GetAddresses(com.Id, 'C');
 
-            if (adv == null)
+            if (com == null)
                 throw new Exception("Advertising Not - Found");
 
 
-            adv.Commerce = new Commerce();
-
-
-            return adv;
+            return com;
         }
 
         public Advertising CreateAdvertising(Advertising advertising)
