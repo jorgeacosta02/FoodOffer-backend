@@ -80,6 +80,17 @@ namespace FoodOffer.Repository.Mapper
             .ForMember(a => a.ust_cod, b => b.MapFrom(src => src.Code))
             .ForMember(a => a.ust_desc, b => b.MapFrom(src => src.Description))
             .ReverseMap();
+
+            CreateMap<AttributeValue, Db_Attribute>()
+            .ForMember(a => a.atr_cod, b => b.MapFrom(src => src.Id))
+            .ForMember(a => a.atr_desc, b => b.MapFrom(src => src.Description))
+            .ForMember(a => a.atr_atc_cod, b => b.MapFrom(src => src.Category))
+            .ReverseMap();
+
+            CreateMap<AttributeValue, Db_Advertising_Attribute>()
+            .ForMember(a => a.ada_atr_cod, b => b.MapFrom(src => src.Id))
+            .ForMember(a => a.ada_value, b => b.MapFrom(src => src.Value))
+            .ReverseMap();
         }
     }
 }

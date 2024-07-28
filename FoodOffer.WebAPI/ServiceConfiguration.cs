@@ -16,7 +16,7 @@ public static class ServiceConfiguration
         string mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 
         builder.Services.AddDbContextPool<ApplicationDbContext>(options => options.UseMySQL(mySqlConnection));
-
+            
         builder.Services.AddAutoMapper(config => {
             config.AddProfile<CustomMapper>();
         }, Assembly.GetExecutingAssembly());
@@ -25,6 +25,11 @@ public static class ServiceConfiguration
         builder.Services.AddScoped<IDbConecction>(_ =>
         {
             return new MySqlConnectionProvider(mySqlConnection);
+        });
+
+        builder.Services.AddScoped<Func<ApplicationDbContext>>(provider => () =>
+        {
+            return provider.GetRequiredService<ApplicationDbContext>();
         });
 
         builder.Services.Configure<AWSOptions>(builder.Configuration.GetSection("AWS"));
@@ -89,6 +94,14 @@ public static class ServiceConfiguration
             return new CommerceRepository(connection, context, mapper);
         });
 
+        builder.Services.AddScoped<IAttributeRepository, AttributeRepository>(provider =>
+        {
+            var connection = provider.GetRequiredService<IDbConecction>();
+            var context = provider.GetRequiredService<Func<ApplicationDbContext>>();
+            var mapper = provider.GetRequiredService<IMapper>();
+            return new AttributeRepository(connection, context, mapper);
+        });
+
 
         #endregion
 
@@ -114,8 +127,8 @@ public static class ServiceConfiguration
         builder.Services.AddScoped<ICategoryService, CategoryService>(provider =>
         {
             var categoryRepository = provider.GetRequiredService<ICategoryRepository>();
-
-            return new CategoryService(categoryRepository);
+            var attributeRepository = provider.GetRequiredService<IAttributeRepository>();
+            return new CategoryService(categoryRepository, attributeRepository);
         });
 
         builder.Services.AddScoped<IAddressService, AddressService>(provider =>

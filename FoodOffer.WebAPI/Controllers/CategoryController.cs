@@ -34,6 +34,22 @@ namespace FoodOffer.WebAPI.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetAttibutes")]
+        public IActionResult GetAttributes([FromQuery] short type)
+        {
+            try
+            {
+                var attributes = _categoryService.GetAttibutesByCategory(type);
+
+                return Ok(attributes);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
         [Route("add")]
         public IActionResult AddCategory([FromBody] Category data)
