@@ -75,7 +75,7 @@ namespace FoodOffer.Repository
             }
             else
             {
-                query.AppendLine("AND (@hour < ats_end_1 AND ats_nextday_1 = 'Y')  OR (@hour < ats_end_2 AND ats_nextday_2 = 'Y') ");
+                query.AppendLine("AND (@hour < ats_end_1)  OR (@hour < ats_end_2) ");
             }
 
 
