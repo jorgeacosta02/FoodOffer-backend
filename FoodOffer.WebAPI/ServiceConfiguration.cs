@@ -16,7 +16,7 @@ public static class ServiceConfiguration
         string mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 
         builder.Services.AddDbContextPool<ApplicationDbContext>(options => options.UseMySQL(mySqlConnection));
-
+            
         builder.Services.AddAutoMapper(config => {
             config.AddProfile<CustomMapper>();
         }, Assembly.GetExecutingAssembly());
@@ -25,6 +25,11 @@ public static class ServiceConfiguration
         builder.Services.AddScoped<IDbConecction>(_ =>
         {
             return new MySqlConnectionProvider(mySqlConnection);
+        });
+
+        builder.Services.AddScoped<Func<ApplicationDbContext>>(provider => () =>
+        {
+            return provider.GetRequiredService<ApplicationDbContext>();
         });
 
         builder.Services.Configure<AWSOptions>(builder.Configuration.GetSection("AWS"));
@@ -73,6 +78,30 @@ public static class ServiceConfiguration
             return new CategoryRepository(connection, context, mapper);
         });
 
+        builder.Services.AddScoped<IAddressRepository, AddressRepository>(provider =>
+        {
+            var connection = provider.GetRequiredService<IDbConecction>();
+            var context = provider.GetRequiredService<ApplicationDbContext>();
+            var mapper = provider.GetRequiredService<IMapper>();
+            return new AddressRepository(connection, context, mapper);
+        });
+
+        builder.Services.AddScoped<ICommerceRepository, CommerceRepository>(provider =>
+        {
+            var connection = provider.GetRequiredService<IDbConecction>();
+            var context = provider.GetRequiredService<ApplicationDbContext>();
+            var mapper = provider.GetRequiredService<IMapper>();
+            return new CommerceRepository(connection, context, mapper);
+        });
+
+        builder.Services.AddScoped<IAttributeRepository, AttributeRepository>(provider =>
+        {
+            var connection = provider.GetRequiredService<IDbConecction>();
+            var context = provider.GetRequiredService<Func<ApplicationDbContext>>();
+            var mapper = provider.GetRequiredService<IMapper>();
+            return new AttributeRepository(connection, context, mapper);
+        });
+
 
         #endregion
 
@@ -98,8 +127,25 @@ public static class ServiceConfiguration
         builder.Services.AddScoped<ICategoryService, CategoryService>(provider =>
         {
             var categoryRepository = provider.GetRequiredService<ICategoryRepository>();
+            var attributeRepository = provider.GetRequiredService<IAttributeRepository>();
+            return new CategoryService(categoryRepository, attributeRepository);
+        });
 
-            return new CategoryService(categoryRepository);
+        builder.Services.AddScoped<IAddressService, AddressService>(provider =>
+        {
+            var addressRepository = provider.GetRequiredService<IAddressRepository>();
+            var loginRepository = provider.GetRequiredService<ILoginRepository>();
+            return new AddressService(addressRepository, loginRepository);
+        });
+
+        builder.Services.AddScoped<ICommerceService, CommerceService>(provider =>
+        {
+            var advRepository = provider.GetRequiredService<IAdvertisingRepository>();
+            var imgRepository = provider.GetRequiredService<IImagesRepository>();
+            var comRepository = provider.GetRequiredService<ICommerceRepository>();
+            var addressRepository = provider.GetRequiredService<IAddressRepository>();
+            var s3 = provider.GetRequiredService<AmazonS3Service>();
+            return new CommerceService(advRepository, imgRepository, comRepository, addressRepository, s3);
         });
 
         #endregion

@@ -12,5 +12,6 @@ namespace FoodOffer.Model.Services
         List<Category> GetCategories(short type);
         Category AddCategory(Category cat, short type);
         Category UpdateCategory(Category cat, short type);
+        List<AttributeValue> GetAttibutesByCategory(short atc);
     }
 }

@@ -31,18 +31,12 @@ namespace FoodOffer.WebAPI.Controllers
 
         [HttpPost]
         [Route("GetAdvertisings")]
-        public IActionResult GetAdvertisings([FromBody] Filter filter)
+        public IActionResult GetAdvertisings([FromBody] AdvFilter filter)
         {
             var advs = _advertisingService.GetAdvertisings(filter);
+            
+            return Ok(advs);
 
-            if (advs != null && advs.Count > 0)
-            {
-                return Ok(advs);
-            }
-            else
-            {
-                return BadRequest("No se encontraron publicaciones activas.");
-            }
         }
 
         [HttpPost]

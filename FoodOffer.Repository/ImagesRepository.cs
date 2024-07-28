@@ -24,7 +24,7 @@ namespace FoodOffer.Repository
         }
 
 
-        public List<Advertising> GetAdvertisings(Filter filter)
+        public List<Advertising> GetAdvertisings(AdvFilter filter)
         {
             DateTime now = DateTime.Now;
             short day = (short)now.DayOfWeek;

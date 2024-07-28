@@ -9,11 +9,11 @@ namespace FoodOffer.Model.Repositories
 {
     public interface IAdvertisingRepository
     {
-        List<Advertising> GetAdvertisings(Filter filter);
-        Advertising GetAdvertisingData(int id);
+        List<Advertising> GetAdvertisings(AdvFilter filter);
+        Advertising GetAdvertising(int AdvId);
         int SaveAdvertisingData(Advertising advertising);
         bool UpdateAdvertisingData(Advertising advertising);
-
+        List<Address> GetAdvertisingAddress(Advertising Adv);
         bool UpdateAdvertisingState(Advertising advertising);
         bool DeleteAdvertisingData(int id);
     }
