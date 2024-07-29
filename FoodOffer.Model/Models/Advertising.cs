@@ -10,7 +10,7 @@ namespace FoodOffer.Model.Models
         public short StateCode { get; set; }
         public short CategoryCode { get; set; }
         public Commerce Commerce { get; set; }
-        public List <Attribute> Attributes { get; set; }
+        public List <AttributeValue> Attributes { get; set; }
         public List<Image> Images { get; set; }
         public short PriorityLevel { get; set; }
         public DateTime CreationDate { get; set; }
@@ -19,7 +19,7 @@ namespace FoodOffer.Model.Models
 
         public Advertising()
         {
-            Attributes = new List<Attribute>();
+            Attributes = new List<AttributeValue>();
             Images = new List<Image>();
             Commerce = new Commerce();
         }

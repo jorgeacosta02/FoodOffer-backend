@@ -111,6 +111,15 @@ namespace FoodOffer.Repository
 
         }
 
+        public Image GetAdvertisingImage(int AdvId)
+        {
+            var Adv = _context.advertising_images.FirstOrDefault(adv => adv.adi_adv_id == AdvId);
+            _context.Dispose();
+
+            return _mapper.Map<Image>(Adv);
+
+        }
+
         public bool SaveImageData(Image image, char type)
         {
 

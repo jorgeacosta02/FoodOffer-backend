@@ -91,6 +91,16 @@ namespace FoodOffer.Repository.Mapper
             .ForMember(a => a.ada_atr_cod, b => b.MapFrom(src => src.Id))
             .ForMember(a => a.ada_value, b => b.MapFrom(src => src.Value))
             .ReverseMap();
+
+            CreateMap<Commerce, Db_Commerce>()
+            .ForMember(a => a.com_id, b => b.MapFrom(src => src.Id))
+            .ForMember(a => a.com_usr_id, b => b.MapFrom(src => src.OwnerId))
+            .ForMember(a => a.com_name, b => b.MapFrom(src => src.Name))
+            .ForMember(a => a.com_mail, b => b.MapFrom(src => src.Mail))
+            .ForMember(a => a.com_phone, b => b.MapFrom(src => src.Phone))
+            .ForMember(a => a.com_cell_phone, b => b.MapFrom(src => src.CellPhone))
+            .ForMember(a => a.com_web_url, b => b.MapFrom(src => src.WebUrl))
+            .ReverseMap();
         }
     }
 }

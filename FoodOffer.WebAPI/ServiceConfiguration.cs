@@ -112,9 +112,12 @@ public static class ServiceConfiguration
         {
             var advertisingRepository = provider.GetRequiredService<IAdvertisingRepository>();
             var imagesRepository = provider.GetRequiredService<IImagesRepository>();
+            var commerceRepository = provider.GetRequiredService<ICommerceRepository>();
+            var addressRepository = provider.GetRequiredService<IAddressRepository>();
+            var attributeRepository = provider.GetRequiredService<IAttributeRepository>();
             var s3 = provider.GetRequiredService<AmazonS3Service>();
 
-            return new AdvertisingService(advertisingRepository, imagesRepository, s3);
+            return new AdvertisingService(advertisingRepository, imagesRepository, commerceRepository, addressRepository, attributeRepository, s3);
         });
 
         builder.Services.AddScoped<IUserService, UserService>(provider =>

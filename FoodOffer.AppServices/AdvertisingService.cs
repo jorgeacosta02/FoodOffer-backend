@@ -10,13 +10,25 @@ namespace FoodOffer.AppServices
     {
         private readonly IAdvertisingRepository _advertisingRepository;
         private readonly IImagesRepository _imagesRepository;
+        private readonly ICommerceRepository _commerceRepository;
+        private readonly IAddressRepository _addressRepository;
+        private readonly IAttributeRepository _attributeRepository;
+        private readonly string s3Path = "https://s3.sa-east-1.amazonaws.com/clickfood/";
         private readonly AmazonS3Service _s3Service;
         private static string bucketName = "clickfood";
-        public AdvertisingService(IAdvertisingRepository advertisingRepository, IImagesRepository imagesRepository, AmazonS3Service s3Service) 
+        public AdvertisingService(IAdvertisingRepository advertisingRepository, 
+            IImagesRepository imagesRepository, 
+            ICommerceRepository commerceRepository,
+            IAddressRepository addressRepository, 
+            IAttributeRepository attributeRepository,
+            AmazonS3Service s3Service) 
         {
             _advertisingRepository = advertisingRepository ?? throw new ArgumentNullException(nameof(advertisingRepository));
             _imagesRepository = imagesRepository ?? throw new ArgumentNullException(nameof(imagesRepository));
+            _commerceRepository = commerceRepository ?? throw new ArgumentNullException(nameof(commerceRepository));
             _s3Service = s3Service ?? throw new ArgumentNullException(nameof(s3Service));
+            _addressRepository = addressRepository ?? throw new ArgumentNullException(nameof(addressRepository));
+            _attributeRepository = attributeRepository ?? throw new ArgumentNullException(nameof(attributeRepository));
         }
 
         public List<Advertising> GetAdvertisings(AdvFilter filter)
@@ -31,8 +43,18 @@ namespace FoodOffer.AppServices
             if (adv == null)
                 throw new Exception("Advertising Not - Found");
 
+            adv.Commerce = _commerceRepository.GetCommerce(adv.Commerce.Id);
 
-            adv.Commerce = new Commerce();
+            adv.Commerce.Addresses = _addressRepository.GetAdvertisingAddresses(adv.Id);
+
+            adv.Attributes = _attributeRepository.GetAdvertisingsAttribute(adv.Id);
+
+            adv.Images.Add(_imagesRepository.GetAdvertisingImage(adv.Id));
+
+            foreach(var img in adv.Images)
+            {
+                img.Path = s3Path + img.Path;
+            }
 
 
             return adv;
