@@ -10,5 +10,6 @@ namespace FoodOffer.Model.Repositories
     public interface IAddressRepository
     {
         List<Address> GetAddresses(int id, char type);
+        List<Address> GetAdvertisingAddresses(int advId);
     }
 }

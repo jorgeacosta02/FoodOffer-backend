@@ -10,5 +10,7 @@ namespace FoodOffer.Model.Repositories
     public interface IAttributeRepository
     {
         List<AttributeValue> GetAttributesByCategory(short atc);
+        List<AttributeValue> GetAdvertisingsAttribute(int advId);
+
     }
 }

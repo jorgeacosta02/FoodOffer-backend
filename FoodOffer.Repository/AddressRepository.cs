@@ -124,6 +124,60 @@ namespace FoodOffer.Repository
         }
 
 
+        public List<Address> GetAdvertisingAddresses(int advId)
+        {
+
+            List<Address> addresses = new List<Address>();
+
+            var query = new StringBuilder();
+            query.AppendLine("SELECT * FROM advertisings_address ");
+            query.AppendLine("INNER JOIN addresses ON add_ref_id = aad_adv_com_id AND add_ref_type = 'C' AND add_item = add_add_item ");
+            query.AppendLine("INNER JOIN countries ON cou_cod = add_cou_cod ");
+            query.AppendLine("INNER JOIN states ON ste_cod = add_ste_cod AND ste_cou_cod = add_cou_cod ");
+            query.AppendLine("INNER JOIN cities ON cit_cod = add_cit_cod AND cit_cou_cod = add_cou_cod AND cit_ste_cod = add_ste_cod ");
+            query.AppendLine("WHERE aad_adv_id = @advId ");
+
+            using (var connection = _session.GetConnection())
+            {
+                using (var command = new MySqlCommand(query.ToString(), connection))
+                {
+                    command.Parameters.AddWithValue("@advId", advId);
+
+                    try
+                    {
+                        connection.Open();
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var address = new Address();
+                                address.Ref_Id = Convert.ToInt16(reader["add_ref_id"]);
+                                address.Ref_Type = Convert.ToChar(reader["add_ref_type"]);
+                                address.Item = Convert.ToInt16(reader["add_item"]);
+                                address.Name = Convert.ToString(reader["add_name"]);
+                                address.Description = Convert.ToString(reader["add_desc"]);
+                                address.Obs = Convert.ToString(reader["add_obs"]);
+                                address.City = new City(Convert.ToInt16(reader["cit_cod"]), Convert.ToString(reader["cit_desc"]));
+                                address.State = new State(Convert.ToInt16(reader["ste_cod"]), Convert.ToString(reader["ste_desc"]));
+                                address.Country = new Country(Convert.ToInt16(reader["cou_cod"]), Convert.ToString(reader["cou_desc"]));
+                                addresses.Add(address);
+                            
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"Error getting adverting address - Advertising Id: {advId}.", ex);
+                    }
+                }
+            }
+
+            return addresses;
+        }
+
+
+
         public bool SaveAddressData(Address address)
         {
 
