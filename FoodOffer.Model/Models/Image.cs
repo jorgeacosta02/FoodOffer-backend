@@ -7,19 +7,17 @@ using System.Threading.Tasks;
 
 namespace FoodOffer.Model.Models
 {
-    public class Image
+    public class AppImage
     {
         public int ReferenceId { get; set; }
         public short Item { get; set; }
         public string Name { get; set; }
         public string Path { get; set; }
-        public bool Keep { get; set; }
-        public bool New { get; set; }
         public IFormFile ImageFile { get; set; }
 
-        public Image () { }
+        public AppImage() { }
 
-        public Image(int referenceId, short item, string name, string path, IFormFile? imageFile)
+        public AppImage(int referenceId, short item, string name, string path, IFormFile? imageFile)
         {
             ReferenceId = referenceId;
             Item = item;

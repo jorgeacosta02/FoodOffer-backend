@@ -36,7 +36,14 @@ namespace FoodOffer.AppServices
             return _advertisingRepository.GetAdvertisings(filter);
         }
 
-        public Advertising GetAdvertising(int Id) 
+        public Advertising GetAdvertisingSimple(int Id)
+        {
+            Advertising adv = _advertisingRepository.GetAdvertising(Id);
+
+            return adv;
+        }
+
+        public Advertising GetAdvertisingDetail(int Id) 
         {
             Advertising adv = _advertisingRepository.GetAdvertising(Id);
 
@@ -56,74 +63,112 @@ namespace FoodOffer.AppServices
                 img.Path = s3Path + img.Path;
             }
 
+            return adv;
+        }
+
+        public List<Advertising> GetAdvertisingsByCommerce(int Id)
+        {
+            return _advertisingRepository.GetAdvertisingsByCommerce(Id);
+        }
+
+        public Advertising GetAdvertisingSetting(int Id)
+        {
+            Advertising adv = _advertisingRepository.GetAdvertising(Id);
+
+            if (adv == null)
+                throw new Exception("Advertising Not - Found");
+
+            adv.Commerce.Addresses = _addressRepository.GetAdvertisingAddresses(adv.Id);
+
+            adv.Attributes = _attributeRepository.GetAdvertisingsAttribute(adv.Id);
+
+            adv.Images.Add(_imagesRepository.GetAdvertisingImage(adv.Id));
+
+            foreach (var img in adv.Images)
+            {
+                img.Path = s3Path + img.Path;
+            }
 
             return adv;
         }
 
+        public bool SetAdvertisingTimeSet(List<AdvertisingTimeSet> timeSets, int advId)
+        {
+            _advertisingRepository.DeleteAdvertisingTimeSet(advId);
+
+            return _advertisingRepository.SaveAdvertisingTimeSet(timeSets);
+
+        }
+
         public Advertising CreateAdvertising(Advertising advertising)
         {
+            //Save advertising data to get an ID.
             advertising.Id = _advertisingRepository.SaveAdvertisingData(advertising);
 
             if (advertising.Id == 0)
                 throw new Exception("Error saving advertising data");
 
-            foreach(var img in advertising.Images) 
-            {
-                string extension = Path.GetExtension(img.ImageFile.FileName);
-                img.ReferenceId = advertising.Id;
-                img.Name = advertising.Title;
-                img.Path = $"com_id_{advertising.Commerce.Id}/adv_id_{advertising.Id}-adi_item_{img.Item}{extension}";
-                if(!_s3Service.UploadFileAsync(bucketName, img.Path, img.ImageFile).Result)
-                    throw new Exception("Error saving advertising image");
-
-                if(!_imagesRepository.SaveImageData(img, 'A'))
-                    throw new Exception("Error saving advertising image data");
-
-                img.ImageFile = null;
-            }
+            SaveAdvertisingImages(advertising);
 
             return advertising;
+
         }
 
-        public Advertising UpdateAdvertising(Advertising advertising)
+        public Advertising UpdateAdvertisingData(Advertising advertising)
         {
 
             if (!_advertisingRepository.UpdateAdvertisingData(advertising))
                 throw new Exception("Error updating advertising data");
 
+            return advertising;
+        }
 
-            if(advertising.Images.Count > 0)
+        public Advertising UpdateAdvertisingImages(Advertising advertising)
+        {
+            var adv = _advertisingRepository.GetAdvertising(advertising.Id);
+
+            var oldImage = _imagesRepository.GetAdvertisingImage(adv.Id);
+
+            if (oldImage != null)
+            {
+                if (!_s3Service.DeleteFileAsync(bucketName, oldImage.Path).Result)
+                    throw new Exception("Error deleting image file from storage");
+
+                if (!_imagesRepository.DeleteImageData(advertising.Id, 1))
+                    throw new Exception("Error deleting advertising image data");
+            }
+
+            SaveAdvertisingImages(advertising);
+
+            return advertising;
+        }
+
+        private void SaveAdvertisingImages(Advertising advertising)
+        {
+            if (advertising.Images != null && advertising.Images.Count > 0)
             {
                 foreach (var img in advertising.Images)
                 {
+                    string extension = Path.GetExtension(img.ImageFile.FileName);
+                    img.ReferenceId = advertising.Id;
+                    img.Name = advertising.Title;
+                    img.Path = $"com_id_{advertising.Commerce.Id}/adv_id_{advertising.Id}-adi_item_{img.Item}{extension}";
 
-                    if(img.New)
-                    {
-                        string extension = Path.GetExtension(img.ImageFile.FileName);
-                        img.ReferenceId = advertising.Id;
-                        img.Name = advertising.Title;
-                        img.Path = $"com_id_{advertising.Commerce.Id}/adv_id_{advertising.Id}-adi_item_{img.Item}{extension}";
 
-                        if (!_s3Service.UploadFileAsync(bucketName, img.Path, img.ImageFile).Result)
-                            throw new Exception("Error saving advertising image");
+                    //Upload image to S3 Bucket
+                    if (!_s3Service.UploadFileAsync(bucketName, img.Path, img.ImageFile).Result)
+                        throw new Exception("Error uploading advertising image");
 
-                        if (!_imagesRepository.SaveImageData(img, 'A'))
-                            throw new Exception("Error saving advertising image data");
-                    }
+                    //Save image data in database
+                    if (!_imagesRepository.SaveImageData(img, 'A'))
+                        throw new Exception("Error saving advertising image data");
 
-                    if (!img.Keep)
-                    {
-                        if (!_s3Service.DeleteFileAsync(bucketName, img.Path).Result)
-                            throw new Exception("Error deleting image file from storage");
+                    img.Path = s3Path + img.Path;
 
-                        if (!_imagesRepository.DeleteImageData(advertising.Id, img.Item))
-                            throw new Exception("Error deleting advertising image data");
-                    }
-
+                    img.ImageFile = null;
                 }
             }
 
-            return advertising;
         }
 
         public bool UpdateAdvertisingState(Advertising advertising)

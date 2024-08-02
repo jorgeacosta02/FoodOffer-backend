@@ -9,8 +9,8 @@ namespace FoodOffer.Model.Repositories
 {
     public interface IImagesRepository
     {
-        bool SaveImageData(Image image, char type);
+        bool SaveImageData(AppImage image, char type);
         bool DeleteImageData(int advId, short item);
-        Image GetAdvertisingImage(int AdvId);
+        AppImage GetAdvertisingImage(int AdvId);
     }
 }

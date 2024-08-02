@@ -30,7 +30,7 @@ namespace FoodOffer.Repository.Mapper
             .ForMember(a => a.uld_salt, b => b.MapFrom(src => src.Salt))
             .ReverseMap();
 
-            CreateMap<Image, Db_Advertising_Image>()
+            CreateMap<AppImage, Db_Advertising_Image>()
             .ForMember(a => a.adi_adv_id, b => b.MapFrom(src => src.ReferenceId))
             .ForMember(a => a.adi_item, b => b.MapFrom(src => src.Item))
             .ForMember(a => a.adi_path, b => b.MapFrom(src => src.Path))
@@ -101,6 +101,17 @@ namespace FoodOffer.Repository.Mapper
             .ForMember(a => a.com_cell_phone, b => b.MapFrom(src => src.CellPhone))
             .ForMember(a => a.com_web_url, b => b.MapFrom(src => src.WebUrl))
             .ReverseMap();
+
+            CreateMap<AdvertisingTimeSet, Db_Advertising_Time_Set>()
+            .ForMember(a => a.ats_adv_id, b => b.MapFrom(src => src.AdvId))
+            .ForMember(a => a.ats_day, b => b.MapFrom(src => src.Day))
+            .ForMember(a => a.ats_start_1, b => b.MapFrom(src => src.Start1))
+            .ForMember(a => a.ats_end_1, b => b.MapFrom(src => src.End1))
+            .ForMember(a => a.ats_nextday_1, b => b.MapFrom(src => src.NextDay1))
+            .ForMember(a => a.ats_start_2, b => b.MapFrom(src => src.Start2))
+            .ForMember(a => a.ats_end_2, b => b.MapFrom(src => src.End2))
+            .ForMember(a => a.ats_nextday_2, b => b.MapFrom(src => src.NextDay2))
+            .ReverseMap();  
         }
     }
 }

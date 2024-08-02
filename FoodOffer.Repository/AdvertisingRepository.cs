@@ -3,7 +3,9 @@ using clasificados.Infraestructure.DbContextConfig.DbModels;
 using FoodOffer.Infrastructure;
 using FoodOffer.Model.Models;
 using FoodOffer.Model.Repositories;
+using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
+using System.Collections.Generic;
 using System.Text;
 
 namespace FoodOffer.Repository
@@ -11,14 +13,14 @@ namespace FoodOffer.Repository
     public class AdvertisingRepository : IAdvertisingRepository
     {
 
-        private readonly ApplicationDbContext _context;
+        private readonly Func<ApplicationDbContext> _contextFactory;
         private readonly IDbConecction _session;
         private readonly IMapper _mapper;
         private readonly string s3Path = "https://s3.sa-east-1.amazonaws.com/clickfood/";
 
-        public AdvertisingRepository(IDbConecction dbConecction, ApplicationDbContext context, IMapper mapper)
+        public AdvertisingRepository(IDbConecction dbConecction, Func<ApplicationDbContext> contextFactory, IMapper mapper)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _contextFactory = contextFactory ?? throw new ArgumentNullException(nameof(contextFactory));
             _session = dbConecction ?? throw new ArgumentNullException(nameof(dbConecction));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
@@ -121,7 +123,7 @@ namespace FoodOffer.Repository
 
                                 var img = reader["adi_name"] != DBNull.Value ? true : false;
                                 if(img)
-                                    adv.Images.Add(new Image(adv.Id, 1, Convert.ToString(reader["adi_name"]), s3Path + Convert.ToString(reader["adi_path"]), null));
+                                    adv.Images.Add(new AppImage(adv.Id, 1, Convert.ToString(reader["adi_name"]), s3Path + Convert.ToString(reader["adi_path"]), null));
                                 advertisings.Add(adv);
                             }
                         }
@@ -140,10 +142,31 @@ namespace FoodOffer.Repository
 
         public Advertising GetAdvertising(int AdvId)
         {
-            var Adv = _context.advertisings.FirstOrDefault(adv => adv.adv_id == AdvId);
-            _context.Dispose();
+            Advertising advertising;
 
-            return _mapper.Map<Advertising>(Adv);
+            using(var context = _contextFactory())
+            {
+                var data = context.advertisings.FirstOrDefault(adv => adv.adv_id == AdvId);
+                advertising = _mapper.Map<Advertising>(data);
+
+            }
+
+            return advertising;
+
+        }
+
+        public List<Advertising> GetAdvertisingsByCommerce(int comId)
+        {
+            List<Advertising> advertising;
+
+            using (var context = _contextFactory())
+            {
+                var data = context.advertisings.Where(adv => adv.adv_com_id == comId && adv.adv_delete_date == null);
+                advertising = _mapper.Map<List<Advertising>>(data);
+
+            }
+
+            return advertising;
 
         }
 
@@ -214,12 +237,16 @@ namespace FoodOffer.Repository
                 advertising.DeleteDate = null;
                 
                 var data = _mapper.Map<Db_Advertising>(advertising);
+                int id = 0;
 
-                _context.advertisings.Add(data);
-                
-                var id = _context.SaveChanges() == 1 ? data.adv_id : 0;
+                using(var context = _contextFactory())
+                {
+                    context.advertisings.Add(data);
+                    id = context.SaveChanges() == 1 ? data.adv_id : 0;
+                }
 
                 return id;
+
             }
             catch(Exception ex)
             {
@@ -228,56 +255,151 @@ namespace FoodOffer.Repository
 
         }
 
+        
+
         public bool UpdateAdvertisingData(Advertising advertising)
         {
             advertising.UpdateDate = DateTime.Now;
             advertising.DeleteDate = null;
+            bool flag = true; 
 
             var data = _mapper.Map<Db_Advertising>(advertising);
 
-            var result = _context.advertisings.Update(data);
-
-            return _context.SaveChanges() == 1;
-
-        }
-
-        public bool UpdateAdvertisingState(Advertising advertising)
-        {
-            var existingAdv = _context.advertisings.FirstOrDefault(adv => adv.adv_id == advertising.Id);
-
-            if (existingAdv == null)
-                throw new Exception($"No fue posible encontrar aviso con Id: {advertising.Id}");
-
-            existingAdv.adv_update_date = DateTime.Now;
-            existingAdv.adv_ads_cod = advertising.StateCode;
-            return _context.SaveChanges() == 1;
-
-        }
-
-        public bool DeleteAdvertisingData(int id)
-        {
-
-
-            var flag = false;
-
-            var existingAdv = _context.advertisings.FirstOrDefault(adv => adv.adv_id == id);
-
-            if (existingAdv != null)
+            using(var context = _contextFactory())
             {
-                existingAdv.adv_update_date = DateTime.Now;
-                existingAdv.adv_delete_date = DateTime.Now;
-
-                flag = _context.SaveChanges() == 1;
-            }
-            else
-            {
-                throw new Exception("Advertising not found.");
+                context.advertisings.Update(data);
+                flag = context.SaveChanges() == 1;
             }
 
             return flag;
 
         }
 
+        public bool UpdateAdvertisingState(Advertising advertising)
+        {
+            bool flag = false;
+
+            using(var context = _contextFactory())
+            {
+
+                var existingAdv = context.advertisings.FirstOrDefault(adv => adv.adv_id == advertising.Id);
+
+                if (existingAdv == null)
+                    throw new Exception($"No fue posible encontrar aviso con Id: {advertising.Id}");
+
+                existingAdv.adv_update_date = DateTime.Now;
+                existingAdv.adv_ads_cod = advertising.StateCode;
+                flag = context.SaveChanges() == 1;
+
+            }
+
+            return flag;
+
+        }
+
+        public bool DeleteAdvertisingData(int id)
+        {
+            var flag = false;
+
+            using(var context = _contextFactory())
+            {
+                var existingAdv = context.advertisings.FirstOrDefault(adv => adv.adv_id == id);
+
+                if (existingAdv != null)
+                {
+                    existingAdv.adv_update_date = DateTime.Now;
+                    existingAdv.adv_delete_date = DateTime.Now;
+
+                    flag = context.SaveChanges() == 1;
+                }
+                else
+                {
+                    throw new Exception("Advertising not found.");
+                }
+            }
+
+            return flag;
+
+        }
+
+        #region TimeSets
+
+        public bool SaveAdvertisingTimeSet(List<AdvertisingTimeSet> sets)
+        {
+            bool flag = false;
+
+            try
+            {
+                using (var context = _contextFactory())
+                {
+                    using (var transaction = context.Database.BeginTransaction())
+                    {
+                        try
+                        {
+                            foreach (var set in sets)
+                            {
+                                var data = _mapper.Map<Db_Advertising_Time_Set>(set);
+                                context.advertising_time_settings.Add(data);
+                            };
+
+                            int affectedRows = context.SaveChanges();
+
+                            if (affectedRows == sets.Count)
+                            {
+                                transaction.Commit();
+                                flag = true;
+                            }
+                            else
+                            {
+                                transaction.Rollback();
+                                flag = false;
+                            }
+
+                        }
+                        catch (Exception)
+                        {
+                            transaction.Rollback();
+                            throw;
+                        }
+                    }
+
+                }
+
+                return flag;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error saving advertising timeset data", ex);
+            }
+        }
+
+        public void DeleteAdvertisingTimeSet(int advId)
+        {
+
+            try
+            {
+                using (var context = _contextFactory())
+                {
+                    var timeSets = context.advertising_time_settings.Where(ats => ats.ats_adv_id == advId);
+
+                    if (timeSets.Any())
+                    {
+                        context.advertising_time_settings.RemoveRange(timeSets);
+                        context.SaveChanges();
+                    }
+
+                }
+
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("Error deleting advertising time set", ex);
+            }
+
+        }
+
+        #endregion
 
     }
+
 }

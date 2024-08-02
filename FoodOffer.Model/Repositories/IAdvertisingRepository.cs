@@ -11,10 +11,14 @@ namespace FoodOffer.Model.Repositories
     {
         List<Advertising> GetAdvertisings(AdvFilter filter);
         Advertising GetAdvertising(int AdvId);
+        List<Advertising> GetAdvertisingsByCommerce(int comId);
         int SaveAdvertisingData(Advertising advertising);
         bool UpdateAdvertisingData(Advertising advertising);
         List<Address> GetAdvertisingAddress(Advertising Adv);
         bool UpdateAdvertisingState(Advertising advertising);
         bool DeleteAdvertisingData(int id);
+        bool SaveAdvertisingTimeSet(List<AdvertisingTimeSet> sets);
+        void DeleteAdvertisingTimeSet(int advId);
+
     }
 }

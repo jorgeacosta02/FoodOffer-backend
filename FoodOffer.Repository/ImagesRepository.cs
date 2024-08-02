@@ -111,16 +111,16 @@ namespace FoodOffer.Repository
 
         }
 
-        public Image GetAdvertisingImage(int AdvId)
+        public AppImage GetAdvertisingImage(int AdvId)
         {
             var Adv = _context.advertising_images.FirstOrDefault(adv => adv.adi_adv_id == AdvId);
             _context.Dispose();
 
-            return _mapper.Map<Image>(Adv);
+            return _mapper.Map<AppImage>(Adv);
 
         }
 
-        public bool SaveImageData(Image image, char type)
+        public bool SaveImageData(AppImage image, char type)
         {
 
             if(type == 'A')
@@ -131,8 +131,8 @@ namespace FoodOffer.Repository
             }
             else
             {
-                var data = _mapper.Map<Db_Advertising_Image>(image);
-                var result = _context.advertising_images.Add(data);
+                var data = _mapper.Map<Db_Commerce_Image>(image);
+                var result = _context.commerce_images.Add(data);
                 return _context.SaveChanges() == 1 ? true : false;
             }
 
