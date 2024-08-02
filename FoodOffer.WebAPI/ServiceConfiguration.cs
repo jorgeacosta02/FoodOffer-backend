@@ -57,7 +57,7 @@ public static class ServiceConfiguration
         builder.Services.AddScoped<IAdvertisingRepository, AdvertisingRepository>(provider =>
         {
             var connection = provider.GetRequiredService<IDbConecction>();
-            var context = provider.GetRequiredService<ApplicationDbContext>();
+            var context = provider.GetRequiredService<Func<ApplicationDbContext>>();
             var mapper = provider.GetRequiredService<IMapper>();
             return new AdvertisingRepository(connection, context, mapper);
         });

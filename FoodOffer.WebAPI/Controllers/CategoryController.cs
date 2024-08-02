@@ -19,7 +19,7 @@ namespace FoodOffer.WebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("get")]
+        [Route("GetCategories")]
         public IActionResult GetCategories([FromQuery] short type)
         {
             try
@@ -51,7 +51,7 @@ namespace FoodOffer.WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("add")]
+        [Route("AddCategory")]
         public IActionResult AddCategory([FromBody] Category data)
         {
             try
@@ -67,7 +67,7 @@ namespace FoodOffer.WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("update")]
+        [Route("UpdateCategory")]
         public IActionResult UpdateCategory([FromBody] Category data, [FromQuery] short type)
         {
             try
@@ -75,6 +75,22 @@ namespace FoodOffer.WebAPI.Controllers
                 Category category = _categoryService.UpdateCategory(data, type);
 
                 return Ok(category);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("DeleteCategory")]
+        public IActionResult DeleteCategory([FromQuery] int id, [FromQuery] short type)
+        {
+            try
+            {
+                //Category category = _categoryService.UpdateCategory(data, type);
+
+                return Ok();
             }
             catch (Exception ex)
             {

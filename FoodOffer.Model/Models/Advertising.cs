@@ -11,7 +11,8 @@ namespace FoodOffer.Model.Models
         public short CategoryCode { get; set; }
         public Commerce Commerce { get; set; }
         public List <AttributeValue> Attributes { get; set; }
-        public List<Image> Images { get; set; }
+        public List<AppImage> Images { get; set; }
+        public List<AdvertisingTimeSet> AdvertisingTimeSets { get; set; }
         public short PriorityLevel { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime UpdateDate { get; set; }
@@ -20,7 +21,7 @@ namespace FoodOffer.Model.Models
         public Advertising()
         {
             Attributes = new List<AttributeValue>();
-            Images = new List<Image>();
+            Images = new List<AppImage>();
             Commerce = new Commerce();
         }
     }

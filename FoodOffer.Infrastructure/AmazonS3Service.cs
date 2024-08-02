@@ -28,20 +28,32 @@ namespace FoodOffer.Infrastructure
 
         public async Task<bool> UploadFileAsync(string bucketName, string key, IFormFile file)
         {
-            using var memoryStream = new MemoryStream();
-            file.CopyTo(memoryStream);
+            bool flag = false;
 
-            var fileTransferUtility = new TransferUtility(_amazonS3);
-
-            await fileTransferUtility.UploadAsync(new TransferUtilityUploadRequest
+            try
             {
-                InputStream = memoryStream,
-                Key = key,
-                BucketName = bucketName,
-                ContentType = file.ContentType
-            });
+                using var memoryStream = new MemoryStream();
+                file.CopyTo(memoryStream);
 
-            return true;
+                var fileTransferUtility = new TransferUtility(_amazonS3);
+                
+                await fileTransferUtility.UploadAsync(new TransferUtilityUploadRequest
+                {
+                    InputStream = memoryStream,
+                    Key = key,
+                    BucketName = bucketName,
+                    ContentType = file.ContentType
+                });
+
+                flag = true;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error uploading file to S3 Bucket", ex);
+            }
+
+            return flag;
 
         }
 
@@ -49,8 +61,10 @@ namespace FoodOffer.Infrastructure
         {
             try
             {
-                var uri = new Uri(key);
-                key = uri.AbsolutePath.Substring(1);
+                if (Uri.TryCreate(key, UriKind.Absolute, out Uri uri))
+                {
+                    key = uri.AbsolutePath.Substring(1); 
+                }
 
                 var deleteObjectRequest = new DeleteObjectRequest
                 {
