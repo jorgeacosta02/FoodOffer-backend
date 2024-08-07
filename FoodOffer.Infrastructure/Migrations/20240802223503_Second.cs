@@ -6,7 +6,7 @@ using MySql.EntityFrameworkCore.Metadata;
 
 namespace FoodOffer.Infrastructure.Migrations
 {
-    public partial class First : Migration
+    public partial class Second : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -96,11 +96,11 @@ namespace FoodOffer.Infrastructure.Migrations
                 {
                     ats_adv_id = table.Column<int>(type: "int", nullable: false),
                     ats_day = table.Column<short>(type: "smallint", nullable: false),
-                    ats_start_1 = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    ats_end_1 = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    ats_start_1 = table.Column<TimeSpan>(type: "time(6)", nullable: false),
+                    ats_end_1 = table.Column<TimeSpan>(type: "time(6)", nullable: false),
                     ats_nextday_1 = table.Column<string>(type: "varchar(1)", nullable: true),
-                    ats_start_2 = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    ats_end_2 = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    ats_start_2 = table.Column<TimeSpan>(type: "time(6)", nullable: true),
+                    ats_end_2 = table.Column<TimeSpan>(type: "time(6)", nullable: true),
                     ats_nextday_2 = table.Column<string>(type: "varchar(1)", nullable: true)
                 },
                 constraints: table =>
@@ -136,14 +136,13 @@ namespace FoodOffer.Infrastructure.Migrations
                 name: "advertisings_address",
                 columns: table => new
                 {
-                    aad_adv_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    aad_adv_id = table.Column<int>(type: "int", nullable: false),
                     aad_adv_com_id = table.Column<int>(type: "int", nullable: false),
-                    add_add_item = table.Column<short>(type: "smallint", nullable: false)
+                    aad_add_item = table.Column<short>(type: "smallint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_advertisings_address", x => x.aad_adv_id);
+                    table.PrimaryKey("PK_advertisings_address", x => new { x.aad_adv_id, x.aad_adv_com_id, x.aad_add_item });
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -242,6 +241,7 @@ namespace FoodOffer.Infrastructure.Migrations
                     com_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     com_usr_id = table.Column<int>(type: "int", nullable: false),
+                    com_name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true),
                     com_cot_cod = table.Column<short>(type: "smallint", nullable: false),
                     com_mail = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true),
                     com_phone = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: true),

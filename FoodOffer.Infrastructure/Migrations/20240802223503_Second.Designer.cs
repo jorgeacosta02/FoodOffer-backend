@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FoodOffer.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240722234749_First")]
-    partial class First
+    [Migration("20240802223503_Second")]
+    partial class Second
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -107,16 +107,15 @@ namespace FoodOffer.Infrastructure.Migrations
             modelBuilder.Entity("clasificados.Infraestructure.DbContextConfig.DbModels.Db_Advertising_address", b =>
                 {
                     b.Property<int>("aad_adv_id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<int>("aad_adv_com_id")
                         .HasColumnType("int");
 
-                    b.Property<short>("add_add_item")
+                    b.Property<short>("aad_add_item")
                         .HasColumnType("smallint");
 
-                    b.HasKey("aad_adv_id");
+                    b.HasKey("aad_adv_id", "aad_adv_com_id", "aad_add_item");
 
                     b.ToTable("advertisings_address");
                 });
@@ -201,11 +200,11 @@ namespace FoodOffer.Infrastructure.Migrations
                     b.Property<short>("ats_day")
                         .HasColumnType("smallint");
 
-                    b.Property<DateTime>("ats_end_1")
-                        .HasColumnType("datetime(6)");
+                    b.Property<TimeSpan>("ats_end_1")
+                        .HasColumnType("time(6)");
 
-                    b.Property<DateTime?>("ats_end_2")
-                        .HasColumnType("datetime(6)");
+                    b.Property<TimeSpan?>("ats_end_2")
+                        .HasColumnType("time(6)");
 
                     b.Property<string>("ats_nextday_1")
                         .HasColumnType("varchar(1)");
@@ -213,11 +212,11 @@ namespace FoodOffer.Infrastructure.Migrations
                     b.Property<string>("ats_nextday_2")
                         .HasColumnType("varchar(1)");
 
-                    b.Property<DateTime>("ats_start_1")
-                        .HasColumnType("datetime(6)");
+                    b.Property<TimeSpan>("ats_start_1")
+                        .HasColumnType("time(6)");
 
-                    b.Property<DateTime?>("ats_start_2")
-                        .HasColumnType("datetime(6)");
+                    b.Property<TimeSpan?>("ats_start_2")
+                        .HasColumnType("time(6)");
 
                     b.HasKey("ats_adv_id", "ats_day");
 
@@ -295,6 +294,10 @@ namespace FoodOffer.Infrastructure.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<string>("com_mail")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("com_name")
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 

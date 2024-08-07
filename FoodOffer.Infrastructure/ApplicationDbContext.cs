@@ -73,6 +73,9 @@ namespace FoodOffer.Infrastructure
             modelBuilder.Entity<Db_Advertising_Attribute>()
                 .HasKey(a => new { a.ada_adv_id, a.ada_atr_cod });
 
+            modelBuilder.Entity<Db_Advertising_address>()
+                .HasKey(a => new { a.aad_adv_id, a.aad_adv_com_id, a.aad_add_item });
+
             base.OnModelCreating(modelBuilder);
         }
     }
