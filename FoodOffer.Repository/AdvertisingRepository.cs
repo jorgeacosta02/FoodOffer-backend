@@ -5,6 +5,7 @@ using FoodOffer.Model.Models;
 using FoodOffer.Model.Repositories;
 using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Asn1.Cms;
 using System.Collections.Generic;
 using System.Text;
 
@@ -50,12 +51,15 @@ namespace FoodOffer.Repository
             query.AppendLine("INNER JOIN advertising_categories ON cat_cod = adv_cat_cod ");
             query.AppendLine("INNER JOIN advertising_states ON ads_cod = adv_ads_cod ");
             query.AppendLine("INNER JOIN commerces ON com_id = adv_com_id ");
-            query.AppendLine("INNER JOIN addresses ON add_ref_id = com_id AND add_ref_type = 'C' ");
+            query.AppendLine("INNER JOIN advertisings_address ON aad_adv_id = adv_id AND aad_adv_com_id = adv_com_id ");
+            query.AppendLine("INNER JOIN addresses ON add_ref_id = com_id AND add_ref_type = 'C' AND add_item = add_add_item ");
             query.AppendLine("INNER JOIN cities ON cit_cod = add_cit_cod ");
             query.AppendLine("INNER JOIN states ON ste_cod = add_ste_cod ");
             query.AppendLine("INNER JOIN countries ON cou_cod = add_cou_cod ");
             query.AppendLine("LEFT JOIN advertising_attributes ON ada_adv_id = adv_id ");
+            query.AppendLine("LEFT JOIN attributes ON atr_cod = ada_atr_cod ");
             query.AppendLine("LEFT JOIN advertising_images ON adi_adv_id = adv_id AND adi_item = 1 ");
+            query.AppendLine("LEFT JOIN commerce_images ON coi_com_id = com_id AND coi_item = 1 ");
             query.AppendLine("WHERE ats_day IN (" + days + ") ");
             query.AppendLine("AND adv_ads_cod = 1 ");
             query.AppendLine("AND adv_delete_date IS NULL ");
@@ -81,7 +85,7 @@ namespace FoodOffer.Repository
             }
 
 
-            query.AppendLine("GROUP BY adv_id ");
+            //query.AppendLine("GROUP BY adv_id ");
 
             using (var connection = _session.GetConnection())
             {
@@ -97,34 +101,88 @@ namespace FoodOffer.Repository
                         using (var reader = command.ExecuteReader())
                         {
                             while (reader.Read())
-                            {
-                                var adv = new Advertising();
-                                adv.Id = Convert.ToInt16(reader["adv_id"]);
-                                adv.Title = Convert.ToString(reader["adv_title"]);
-                                adv.Price = Convert.ToDouble(reader["adv_price"]);
-                                adv.Description = Convert.ToString(reader["adv_desc"]);
-                                adv.CategoryCode = Convert.ToInt16(reader["cat_cod"]);
-                                adv.StateCode = Convert.ToInt16(reader["ads_cod"]);
-                                adv.PriorityLevel = Convert.ToInt16(reader["adv_prl_cod"]);
-                                adv.Commerce = new Commerce();
-                                adv.Commerce.Id = Convert.ToInt16(reader["com_id"]);
-                                adv.Commerce.Name = Convert.ToString(reader["com_name"]);
-                                var address = new Address();
-                                address.Name = Convert.ToString(reader["add_name"]);
-                                address.Ref_Type = Convert.ToChar(reader["add_ref_type"]);
-                                address.Description = Convert.ToString(reader["add_desc"]);
-                                address.City.Code = Convert.ToInt16(reader["cit_cod"]);
-                                address.City.Description = Convert.ToString(reader["cit_desc"]);
-                                address.State.Code = Convert.ToInt16(reader["ste_cod"]);
-                                address.State.Description = Convert.ToString(reader["ste_desc"]);
-                                address.Country.Code = Convert.ToInt16(reader["cou_cod"]);
-                                address.Country.Description = Convert.ToString(reader["cou_desc"]);
-                                adv.Commerce.Addresses.Add(address);
+                            {  
+                                var advId = Convert.ToInt16(reader["adv_id"]);
+                                var index = advertisings.FindIndex(adv => adv.Id == advId);
 
-                                var img = reader["adi_name"] != DBNull.Value ? true : false;
-                                if(img)
-                                    adv.Images.Add(new AppImage(adv.Id, 1, Convert.ToString(reader["adi_name"]), s3Path + Convert.ToString(reader["adi_path"]), null));
-                                advertisings.Add(adv);
+                                if (index != -1)
+                                {
+                                    var itemAddress = Convert.ToInt16(reader["add_add_item"]);
+
+                                    if (!advertisings[index].Commerce.Addresses.Any(ad => ad.Item == itemAddress))
+                                    {
+                                        var add = new Address();
+                                        add.Name = Convert.ToString(reader["add_name"]);
+                                        add.Item = Convert.ToInt16(reader["add_item"]);
+                                        add.Ref_Type = Convert.ToChar(reader["add_ref_type"]);
+                                        add.Description = Convert.ToString(reader["add_desc"]);
+                                        add.City.Code = Convert.ToInt16(reader["cit_cod"]);
+                                        add.City.Description = Convert.ToString(reader["cit_desc"]);
+                                        add.State.Code = Convert.ToInt16(reader["ste_cod"]);
+                                        add.State.Description = Convert.ToString(reader["ste_desc"]);
+                                        add.Country.Code = Convert.ToInt16(reader["cou_cod"]);
+                                        add.Country.Description = Convert.ToString(reader["cou_desc"]);
+                                        advertisings[index].Commerce.Addresses.Add(add);
+                                    }
+
+                                    var attribute = Convert.ToInt16(reader["ada_atr_cod"]);
+
+                                    if (!advertisings[index].Attributes.Any(at => at.Id == attribute))
+                                    {
+                                        var atr = new AttributeValue();
+                                        atr.Id = Convert.ToInt16(reader["atr_cod"]);
+                                        atr.Description = Convert.ToString(reader["atr_desc"]);
+                                        atr.Value = Convert.ToChar(reader["ada_value"]);
+                                        advertisings[index].Attributes.Add(atr);
+                                    }
+
+
+
+                                }
+                                else
+                                {
+                                    var adv = new Advertising();
+                                    adv.Id = advId;
+                                    adv.Title = Convert.ToString(reader["adv_title"]);
+                                    adv.Price = Convert.ToDouble(reader["adv_price"]);
+                                    adv.Description = Convert.ToString(reader["adv_desc"]);
+                                    adv.CategoryCode = Convert.ToInt16(reader["cat_cod"]);
+                                    adv.StateCode = Convert.ToInt16(reader["ads_cod"]);
+                                    adv.PriorityLevel = Convert.ToInt16(reader["adv_prl_cod"]);
+                                    adv.Commerce = new Commerce();
+                                    adv.Commerce.Id = Convert.ToInt16(reader["com_id"]);
+                                    adv.Commerce.Name = Convert.ToString(reader["com_name"]);
+                                    var address = new Address();
+                                    address.Name = Convert.ToString(reader["add_name"]);
+                                    address.Item = Convert.ToInt16(reader["add_item"]);
+                                    address.Ref_Type = Convert.ToChar(reader["add_ref_type"]);
+                                    address.Description = Convert.ToString(reader["add_desc"]);
+                                    address.City.Code = Convert.ToInt16(reader["cit_cod"]);
+                                    address.City.Description = Convert.ToString(reader["cit_desc"]);
+                                    address.State.Code = Convert.ToInt16(reader["ste_cod"]);
+                                    address.State.Description = Convert.ToString(reader["ste_desc"]);
+                                    address.Country.Code = Convert.ToInt16(reader["cou_cod"]);
+                                    address.Country.Description = Convert.ToString(reader["cou_desc"]);
+                                    adv.Commerce.Addresses.Add(address);
+
+                                    var atr = new AttributeValue();
+                                    atr.Id = Convert.ToInt16(reader["atr_cod"]);
+                                    atr.Description = Convert.ToString(reader["atr_desc"]);
+                                    atr.Value = Convert.ToChar(reader["ada_value"]);
+                                    adv.Attributes.Add(atr);
+
+                                    var img = reader["adi_name"] != DBNull.Value ? true : false;
+                                    if (img)
+                                        adv.Images.Add(new AppImage(adv.Id, 1, Convert.ToString(reader["adi_name"]), s3Path + Convert.ToString(reader["adi_path"]), null));
+
+                                    var logo = reader["coi_name"] != DBNull.Value ? true : false;
+                                    if (logo)
+                                        adv.Commerce.Logo = new AppImage(adv.Id, 1, Convert.ToString(reader["coi_name"]), s3Path + Convert.ToString(reader["coi_path"]), null);
+
+                                    advertisings.Add(adv);
+                                }
+
+                               
                             }
                         }
                     }

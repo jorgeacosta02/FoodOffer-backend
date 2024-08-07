@@ -13,10 +13,10 @@ namespace clasificados.Infraestructure.DbContextConfig.DbModels
     {
         [Key]
         public int aad_adv_id { get; set; }
-
-        [ForeignKey("commerces")]
+        [Key]
         public int aad_adv_com_id { get; set; }
-        public short add_add_item { get; set; }
+        [Key]
+        public short aad_add_item { get; set; }
 
     }
 }
