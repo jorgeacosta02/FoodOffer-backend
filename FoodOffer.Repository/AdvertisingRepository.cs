@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using Org.BouncyCastle.Asn1.Cms;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 
 namespace FoodOffer.Repository
@@ -100,90 +101,24 @@ namespace FoodOffer.Repository
 
                         using (var reader = command.ExecuteReader())
                         {
+
+                            var advertisingsDict = advertisings.ToDictionary(adv => adv.Id);
+
                             while (reader.Read())
-                            {  
+                            {
                                 var advId = Convert.ToInt16(reader["adv_id"]);
-                                var index = advertisings.FindIndex(adv => adv.Id == advId);
 
-                                if (index != -1)
+                                if (!advertisingsDict.TryGetValue(advId, out var advertising))
                                 {
-                                    var itemAddress = Convert.ToInt16(reader["add_add_item"]);
-
-                                    if (!advertisings[index].Commerce.Addresses.Any(ad => ad.Item == itemAddress))
-                                    {
-                                        var add = new Address();
-                                        add.Name = Convert.ToString(reader["add_name"]);
-                                        add.Item = Convert.ToInt16(reader["add_item"]);
-                                        add.Ref_Type = Convert.ToChar(reader["add_ref_type"]);
-                                        add.Description = Convert.ToString(reader["add_desc"]);
-                                        add.City.Code = Convert.ToInt16(reader["cit_cod"]);
-                                        add.City.Description = Convert.ToString(reader["cit_desc"]);
-                                        add.State.Code = Convert.ToInt16(reader["ste_cod"]);
-                                        add.State.Description = Convert.ToString(reader["ste_desc"]);
-                                        add.Country.Code = Convert.ToInt16(reader["cou_cod"]);
-                                        add.Country.Description = Convert.ToString(reader["cou_desc"]);
-                                        advertisings[index].Commerce.Addresses.Add(add);
-                                    }
-
-                                    var attribute = Convert.ToInt16(reader["ada_atr_cod"]);
-
-                                    if (!advertisings[index].Attributes.Any(at => at.Id == attribute))
-                                    {
-                                        var atr = new AttributeValue();
-                                        atr.Id = Convert.ToInt16(reader["atr_cod"]);
-                                        atr.Description = Convert.ToString(reader["atr_desc"]);
-                                        atr.Value = Convert.ToChar(reader["ada_value"]);
-                                        advertisings[index].Attributes.Add(atr);
-                                    }
-
-
-
-                                }
-                                else
-                                {
-                                    var adv = new Advertising();
-                                    adv.Id = advId;
-                                    adv.Title = Convert.ToString(reader["adv_title"]);
-                                    adv.Price = Convert.ToDouble(reader["adv_price"]);
-                                    adv.Description = Convert.ToString(reader["adv_desc"]);
-                                    adv.CategoryCode = Convert.ToInt16(reader["cat_cod"]);
-                                    adv.StateCode = Convert.ToInt16(reader["ads_cod"]);
-                                    adv.PriorityLevel = Convert.ToInt16(reader["adv_prl_cod"]);
-                                    adv.Commerce = new Commerce();
-                                    adv.Commerce.Id = Convert.ToInt16(reader["com_id"]);
-                                    adv.Commerce.Name = Convert.ToString(reader["com_name"]);
-                                    var address = new Address();
-                                    address.Name = Convert.ToString(reader["add_name"]);
-                                    address.Item = Convert.ToInt16(reader["add_item"]);
-                                    address.Ref_Type = Convert.ToChar(reader["add_ref_type"]);
-                                    address.Description = Convert.ToString(reader["add_desc"]);
-                                    address.City.Code = Convert.ToInt16(reader["cit_cod"]);
-                                    address.City.Description = Convert.ToString(reader["cit_desc"]);
-                                    address.State.Code = Convert.ToInt16(reader["ste_cod"]);
-                                    address.State.Description = Convert.ToString(reader["ste_desc"]);
-                                    address.Country.Code = Convert.ToInt16(reader["cou_cod"]);
-                                    address.Country.Description = Convert.ToString(reader["cou_desc"]);
-                                    adv.Commerce.Addresses.Add(address);
-
-                                    var atr = new AttributeValue();
-                                    atr.Id = Convert.ToInt16(reader["atr_cod"]);
-                                    atr.Description = Convert.ToString(reader["atr_desc"]);
-                                    atr.Value = Convert.ToChar(reader["ada_value"]);
-                                    adv.Attributes.Add(atr);
-
-                                    var img = reader["adi_name"] != DBNull.Value ? true : false;
-                                    if (img)
-                                        adv.Images.Add(new AppImage(adv.Id, 1, Convert.ToString(reader["adi_name"]), s3Path + Convert.ToString(reader["adi_path"]), null));
-
-                                    var logo = reader["coi_name"] != DBNull.Value ? true : false;
-                                    if (logo)
-                                        adv.Commerce.Logo = new AppImage(adv.Id, 1, Convert.ToString(reader["coi_name"]), s3Path + Convert.ToString(reader["coi_path"]), null);
-
-                                    advertisings.Add(adv);
+                                    advertising = CreateAdvertisingFromReader(reader);
+                                    advertisingsDict[advId] = advertising;
+                                    advertisings.Add(advertising);
                                 }
 
-                               
+                                AddAddressIfNotExists(advertising, reader);
+                                AddAttributeIfNotExists(advertising, reader);
                             }
+
                         }
                     }
                     catch (Exception ex)
@@ -226,6 +161,77 @@ namespace FoodOffer.Repository
 
             return advertising;
 
+        }
+
+        Advertising CreateAdvertisingFromReader(IDataReader reader)
+        {
+            var adv = new Advertising
+            {
+                Id = Convert.ToInt16(reader["adv_id"]),
+                Title = Convert.ToString(reader["adv_title"]),
+                Price = Convert.ToDouble(reader["adv_price"]),
+                Description = Convert.ToString(reader["adv_desc"]),
+                CategoryCode = Convert.ToInt16(reader["cat_cod"]),
+                StateCode = Convert.ToInt16(reader["ads_cod"]),
+                PriorityLevel = Convert.ToInt16(reader["adv_prl_cod"]),
+                Commerce = new Commerce
+                {
+                    Id = Convert.ToInt16(reader["com_id"]),
+                    Name = Convert.ToString(reader["com_name"]),
+                    Addresses = new List<Address>(),
+                    Logo = reader["coi_name"] != DBNull.Value ? new AppImage(Convert.ToInt16(reader["adv_id"]), 1, Convert.ToString(reader["coi_name"]), s3Path + Convert.ToString(reader["coi_path"]), null) : null
+                },
+                Attributes = new List<AttributeValue>(),
+                Images = reader["adi_name"] != DBNull.Value ? new List<AppImage> { new AppImage(Convert.ToInt16(reader["adv_id"]), 1, Convert.ToString(reader["adi_name"]), s3Path + Convert.ToString(reader["adi_path"]), null) } : new List<AppImage>()
+            };
+
+            return adv;
+        }
+
+        void AddAddressIfNotExists(Advertising advertising, IDataReader reader)
+        {
+            var itemAddress = Convert.ToInt16(reader["add_item"]);
+            if (!advertising.Commerce.Addresses.Any(ad => ad.Item == itemAddress))
+            {
+                var address = new Address
+                {
+                    Name = Convert.ToString(reader["add_name"]),
+                    Item = itemAddress,
+                    Ref_Type = Convert.ToChar(reader["add_ref_type"]),
+                    Description = Convert.ToString(reader["add_desc"]),
+                    City = new City
+                    {
+                        Code = Convert.ToInt16(reader["cit_cod"]),
+                        Description = Convert.ToString(reader["cit_desc"])
+                    },
+                    State = new State
+                    {
+                        Code = Convert.ToInt16(reader["ste_cod"]),
+                        Description = Convert.ToString(reader["ste_desc"])
+                    },
+                    Country = new Country
+                    {
+                        Code = Convert.ToInt16(reader["cou_cod"]),
+                        Description = Convert.ToString(reader["cou_desc"])
+                    }
+                };
+                advertising.Commerce.Addresses.Add(address);
+            }
+        }
+
+        void AddAttributeIfNotExists(Advertising advertising, IDataReader reader)
+        {
+            var attribute = Convert.ToInt16(reader["ada_atr_cod"]);
+            if (!advertising.Attributes.Any(at => at.Id == attribute))
+            {
+                var atr = new AttributeValue
+                {
+                    Id = Convert.ToInt16(reader["atr_cod"]),
+                    Description = Convert.ToString(reader["atr_desc"]),
+                    Value = Convert.ToChar(reader["ada_value"])
+                };
+                advertising.Attributes.Add(atr);
+            }
         }
 
         public List<Address> GetAdvertisingAddress(Advertising Adv)
