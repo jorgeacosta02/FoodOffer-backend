@@ -14,6 +14,7 @@ namespace FoodOffer.Repository.Mapper
         public CustomMapper() 
         {
             //.ForMember(dest => dest.PropiedadDestino, opt => opt.MapFrom(src => src.PropiedadOrigen))
+
             CreateMap<User, Db_User>()
             .ForMember(a => a.usr_id, b => b.MapFrom(src => src.Id_User))
             .ForMember(a => a.usr_name, b => b.MapFrom(src => src.Name))
@@ -100,6 +101,7 @@ namespace FoodOffer.Repository.Mapper
             .ForMember(a => a.com_phone, b => b.MapFrom(src => src.Phone))
             .ForMember(a => a.com_cell_phone, b => b.MapFrom(src => src.CellPhone))
             .ForMember(a => a.com_web_url, b => b.MapFrom(src => src.WebUrl))
+            .ForMember(a => a.com_delete_date, b => b.MapFrom(src => src.DeleteDate))
             .ReverseMap();
 
             CreateMap<AdvertisingTimeSet, Db_Advertising_Time_Set>()

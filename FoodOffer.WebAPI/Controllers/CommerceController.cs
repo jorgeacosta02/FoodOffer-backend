@@ -1,4 +1,5 @@
 ﻿using FoodOffer.AppServices;
+using FoodOffer.Model.Models;
 using FoodOffer.Model.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,6 +31,24 @@ namespace FoodOffer.WebAPI.Controllers
             //}
             return Ok();
         }
+
+
+        [HttpPost]
+        [Route("AddCommerce")]
+        public IActionResult AddCommerce([FromBody] Commerce data)
+        {
+            try
+            {
+                Commerce commerce = _commerceService.AddCommerce(data);
+
+                return Ok(commerce);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
 
     }

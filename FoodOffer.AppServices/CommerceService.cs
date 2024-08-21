@@ -67,7 +67,17 @@ namespace FoodOffer.AppServices
             return advertising;
         }
 
-     
+        public Commerce AddCommerce(Commerce commerce)
+        {
+            //Save commerce data to get an ID.
+            commerce.Id = _commerceRepository.SaveCommerceData(commerce);
+
+            if (commerce.Id == 0)
+                throw new Exception("Error saving commerce data");
+
+            return commerce;
+
+        }
 
         public bool UpdateAdvertisingState(Advertising advertising)
         {
