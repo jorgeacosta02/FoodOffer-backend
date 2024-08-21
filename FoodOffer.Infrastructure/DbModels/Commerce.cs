@@ -29,6 +29,9 @@ namespace clasificados.Infraestructure.DbContextConfig.DbModels
         public string? com_cell_phone { get; set; }
         [MaxLength(60)]
         public string? com_web_url { get; set; }
+        public DateTime? com_delete_date { get; set; }
 
     }
+
+
 }

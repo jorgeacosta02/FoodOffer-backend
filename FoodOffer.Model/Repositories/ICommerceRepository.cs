@@ -10,5 +10,6 @@ namespace FoodOffer.Model.Repositories
     public interface ICommerceRepository
     {
         Commerce GetCommerce(int comId);
+        int SaveCommerceData(Commerce commerce);
     }
 }

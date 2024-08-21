@@ -27,5 +27,6 @@ namespace clasificados.Infraestructure.DbContextConfig.DbModels
         public string? usr_cell_phone { get; set; }
         [ForeignKey("users_type")]
         public short usr_ust_cod { get; set; }
+        public DateTime? usr_delete_date { get; set; }
     }
 }

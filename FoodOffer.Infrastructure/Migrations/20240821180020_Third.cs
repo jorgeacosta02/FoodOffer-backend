@@ -6,7 +6,7 @@ using MySql.EntityFrameworkCore.Metadata;
 
 namespace FoodOffer.Infrastructure.Migrations
 {
-    public partial class Second : Migration
+    public partial class Third : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -246,7 +246,8 @@ namespace FoodOffer.Infrastructure.Migrations
                     com_mail = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true),
                     com_phone = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: true),
                     com_cell_phone = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: true),
-                    com_web_url = table.Column<string>(type: "varchar(60)", maxLength: 60, nullable: true)
+                    com_web_url = table.Column<string>(type: "varchar(60)", maxLength: 60, nullable: true),
+                    com_delete_date = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -353,7 +354,8 @@ namespace FoodOffer.Infrastructure.Migrations
                     usr_mail = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
                     usr_phone = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: true),
                     usr_cell_phone = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: true),
-                    usr_ust_cod = table.Column<short>(type: "smallint", nullable: false)
+                    usr_ust_cod = table.Column<short>(type: "smallint", nullable: false),
+                    usr_delete_date = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {

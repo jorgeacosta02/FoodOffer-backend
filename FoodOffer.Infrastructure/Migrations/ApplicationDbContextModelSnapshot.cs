@@ -291,6 +291,9 @@ namespace FoodOffer.Infrastructure.Migrations
                     b.Property<short>("com_cot_cod")
                         .HasColumnType("smallint");
 
+                    b.Property<DateTime?>("com_delete_date")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("com_mail")
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
@@ -447,6 +450,9 @@ namespace FoodOffer.Infrastructure.Migrations
                     b.Property<string>("usr_cell_phone")
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
+
+                    b.Property<DateTime?>("usr_delete_date")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<short?>("usr_ide_cod")
                         .HasColumnType("smallint");

@@ -90,19 +90,17 @@ namespace FoodOffer.Repository
         }
 
 
-        public int SaveAdvertisingData(Advertising advertising)
+        public int SaveCommerceData(Commerce commerce)
         {
             try
             {
-                advertising.CreationDate = DateTime.Now;
-                advertising.UpdateDate = DateTime.Now;
-                advertising.DeleteDate = null;
+                commerce.DeleteDate = null;
                 
-                var data = _mapper.Map<Db_Advertising>(advertising);
+                var data = _mapper.Map<Db_Commerce>(commerce);
 
-                _context.advertisings.Add(data);
+                _context.commerces.Add(data);
                 
-                var id = _context.SaveChanges() == 1 ? data.adv_id : 0;
+                var id = _context.SaveChanges() == 1 ? data.com_id : 0;
 
                 return id;
             }

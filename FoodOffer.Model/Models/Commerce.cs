@@ -20,6 +20,7 @@ namespace FoodOffer.Model.Models
         public string? CellPhone { get; set; }
         public string? WebUrl { get; set; }
         public AppImage? Logo { get; set; }
+        public DateTime? DeleteDate { get; set; }
 
         public Commerce()
         {
