@@ -120,6 +120,15 @@ namespace FoodOffer.Repository
 
         }
 
+        public AppImage GetCommerceImage(int ComId)
+        {
+            var Coi = _context.commerce_images.FirstOrDefault(coi => coi.coi_com_id == ComId);
+            _context.Dispose();
+
+            return _mapper.Map<AppImage>(Coi);
+
+        }
+
         public bool SaveImageData(AppImage image, char type)
         {
 

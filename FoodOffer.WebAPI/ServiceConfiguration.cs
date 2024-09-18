@@ -143,12 +143,12 @@ public static class ServiceConfiguration
 
         builder.Services.AddScoped<ICommerceService, CommerceService>(provider =>
         {
-            var advRepository = provider.GetRequiredService<IAdvertisingRepository>();
+            var atrRepository = provider.GetRequiredService<IAttributeRepository>();
             var imgRepository = provider.GetRequiredService<IImagesRepository>();
             var comRepository = provider.GetRequiredService<ICommerceRepository>();
             var addressRepository = provider.GetRequiredService<IAddressRepository>();
             var s3 = provider.GetRequiredService<AmazonS3Service>();
-            return new CommerceService(advRepository, imgRepository, comRepository, addressRepository, s3);
+            return new CommerceService(atrRepository, imgRepository, comRepository, addressRepository, s3);
         });
 
         #endregion

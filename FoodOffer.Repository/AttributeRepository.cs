@@ -85,7 +85,47 @@ namespace FoodOffer.Repository
             return attributes;
         }
 
+        public List<AttributeValue> GetCommerceAttributes(int comId)
+        {
+            List<AttributeValue> attributes = new List<AttributeValue>();
 
+            var query = new StringBuilder();
+            query.AppendLine("SELECT * FROM commerce_attributes ");
+            query.AppendLine("INNER JOIN attributes ON atr_cod = coa_atr_id AND atr_atc_cod = 2 AND coa_value = 'Y' ");
+            query.AppendLine("WHERE coa_com_id = @id ");
+
+
+            using (var connection = _session.GetConnection())
+            {
+                using (var command = new MySqlCommand(query.ToString(), connection))
+                {
+                    command.Parameters.AddWithValue("@id", comId);
+
+                    try
+                    {
+                        connection.Open();
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var atr = new AttributeValue();
+                                atr.Id = Convert.ToInt16(reader["atr_cod"]);
+                                atr.Description = Convert.ToString(reader["atr_desc"]);
+                                atr.Value = Convert.ToChar(reader["coa_value"]);
+                                attributes.Add(atr);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"Error getting attributes for commerce Id: {comId}.", ex);
+                    }
+                }
+            }
+
+            return attributes;
+        }
 
     }
 }

@@ -11,6 +11,7 @@ namespace FoodOffer.Model.Repositories
     {
         List<AttributeValue> GetAttributesByCategory(short atc);
         List<AttributeValue> GetAdvertisingsAttribute(int advId);
+        List<AttributeValue> GetCommerceAttributes(int comId);
 
     }
 }

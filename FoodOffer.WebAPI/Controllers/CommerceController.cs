@@ -15,21 +15,45 @@ namespace FoodOffer.WebAPI.Controllers
         }
 
         [HttpGet]
+        [Route("GetCommerces")]
+
+        public IActionResult GetAllCommerces()
+        {
+            try
+            {
+                return Ok(_commerceService.GetCommerces());
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+
+        }
+
+        [HttpGet]
         [Route("GetCommerce")]
 
-        public IActionResult GetAdvertising([FromQuery] int advId)
+        public IActionResult GetCommerce([FromQuery] int comId)
         {
-            //var adv = _commerceService.(advId);
+            try
+            {
+                var com = _commerceService.GetCommerceComplete(comId);
 
-            //if (adv != null)
-            //{
-            //    return Ok(adv);
-            //}
-            //else
-            //{
-            //    return BadRequest("No se encontró publicación para el ID de la búsqueda.");
-            //}
-            return Ok();
+                if (com != null)
+                {
+                    return Ok(com);
+                }
+                else
+                {
+                    return BadRequest($"The commerce ID: {comId} wasn't found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+
         }
 
 
@@ -42,6 +66,26 @@ namespace FoodOffer.WebAPI.Controllers
                 Commerce commerce = _commerceService.AddCommerce(data);
 
                 return Ok(commerce);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("SaveCommerceImage")]
+        public IActionResult CreateAdvertising([FromForm] IFormCollection data)
+        {
+            try
+            {
+                var comId = int.Parse(data["com_id"]);
+                var image = data.Files.GetFile("image");
+
+                _commerceService.SaveCommerceImage(comId, image);
+
+                return Ok();
+
             }
             catch (Exception ex)
             {

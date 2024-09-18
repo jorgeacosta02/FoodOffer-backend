@@ -2,33 +2,53 @@
 using FoodOffer.Model.Models;
 using FoodOffer.Model.Repositories;
 using FoodOffer.Model.Services;
-using static System.Net.Mime.MediaTypeNames;
+using Microsoft.AspNetCore.Http;
 
 namespace FoodOffer.AppServices
 {
     public class CommerceService: ICommerceService
     {
-        private readonly IAdvertisingRepository _advertisingRepository;
+        private readonly IAttributeRepository _attributeRepository;
         private readonly IImagesRepository _imagesRepository;
         private readonly ICommerceRepository _commerceRepository;
         private readonly IAddressRepository _addressRepository;
         private readonly AmazonS3Service _s3Service;
         private static string bucketName = "clickfood";
-        public CommerceService(IAdvertisingRepository advertisingRepository, 
+        private readonly string s3Path = "https://s3.sa-east-1.amazonaws.com/clickfood/";
+        public CommerceService(IAttributeRepository attributeRepository, 
             IImagesRepository imagesRepository,
             ICommerceRepository commerceRepository,
             IAddressRepository addressRepository, AmazonS3Service s3Service) 
         {
-            _advertisingRepository = advertisingRepository ?? throw new ArgumentNullException(nameof(advertisingRepository));
+            _attributeRepository = attributeRepository ?? throw new ArgumentNullException(nameof(attributeRepository));
             _imagesRepository = imagesRepository ?? throw new ArgumentNullException(nameof(imagesRepository));
             _commerceRepository = commerceRepository ?? throw new ArgumentNullException(nameof(commerceRepository));
             _addressRepository = addressRepository ?? throw new ArgumentNullException(nameof(addressRepository));
             _s3Service = s3Service ?? throw new ArgumentNullException(nameof(s3Service));
         }
 
+        public List<Commerce> GetCommerces()
+        {
+            return _commerceRepository.GetCommerces();
+        }
+
         public Commerce GetCommerce(int comID)
         {
             return _commerceRepository.GetCommerce(comID);
+        }
+
+        public Commerce GetCommerceComplete(int comID)
+        {
+            var commerce = _commerceRepository.GetCommerce(comID);
+
+            if (commerce == null)
+                return null;
+
+            commerce.Addresses = _addressRepository.GetAddresses(comID, 'C');
+
+            commerce.Attributes = _attributeRepository.GetCommerceAttributes(comID);
+
+            return commerce;
         }
 
         public Commerce CompleteCommerceData(Commerce com) 
@@ -40,31 +60,6 @@ namespace FoodOffer.AppServices
 
 
             return com;
-        }
-
-        public Advertising CreateAdvertising(Advertising advertising)
-        {
-            advertising.Id = _advertisingRepository.SaveAdvertisingData(advertising);
-
-            if (advertising.Id == 0)
-                throw new Exception("Error saving advertising data");
-
-            foreach(var img in advertising.Images) 
-            {
-                string extension = Path.GetExtension(img.ImageFile.FileName);
-                img.ReferenceId = advertising.Id;
-                img.Name = advertising.Title;
-                img.Path = $"com_id_{advertising.Commerce.Id}/adv_id_{advertising.Id}-adi_item_{img.Item}{extension}";
-                if(!_s3Service.UploadFileAsync(bucketName, img.Path, img.ImageFile).Result)
-                    throw new Exception("Error saving advertising image");
-
-                if(!_imagesRepository.SaveImageData(img, 'A'))
-                    throw new Exception("Error saving advertising image data");
-
-                img.ImageFile = null;
-            }
-
-            return advertising;
         }
 
         public Commerce AddCommerce(Commerce commerce)
@@ -79,14 +74,62 @@ namespace FoodOffer.AppServices
 
         }
 
-        public bool UpdateAdvertisingState(Advertising advertising)
+        public void SaveCommerceImage(int commerceId, IFormFile image)
         {
-            return _advertisingRepository.UpdateAdvertisingState(advertising);
+            if (image != null)
+            {
+                var commerce = GetCommerce(commerceId);
+
+                if (commerce == null)
+                    throw new Exception($"The commerce ID: {commerceId} wasn't found");
+
+                commerce.Logo = new AppImage();
+                commerce.Logo.ImageFile = image;
+                commerce.Logo.Item = 1;
+                commerce.Logo.Name = commerce.Name;
+
+                string extension = Path.GetExtension(commerce.Logo.ImageFile.FileName);
+                commerce.Logo.ReferenceId = commerce.Id;
+                commerce.Logo.Name = commerce.Name;
+                commerce.Logo.Path = $"logo/com_id_{commerce.Id}{extension}";
+
+                //Upload image to S3 Bucket
+                if (!_s3Service.UploadFileAsync(bucketName, commerce.Logo.Path, commerce.Logo.ImageFile).Result)
+                    throw new Exception("Error uploading commerce image");
+
+                //Save image data in database
+                if (!_imagesRepository.SaveImageData(commerce.Logo, 'C'))
+                    throw new Exception("Error saving commerce image data");
+
+                commerce.Logo.Path = s3Path + commerce.Logo.Path;
+
+                commerce.Logo.ImageFile = null;
+            }
+
         }
 
-         public bool DeleteAdvertising(int id)
+        public bool UpdateCommerceImage(int commerceId, IFormFile image)
         {
-            return _advertisingRepository.DeleteAdvertisingData(id);
+            bool flag = false;
+
+            var oldImage = _imagesRepository.GetCommerceImage(commerceId);
+
+            if (oldImage != null)
+            {
+                if (!_s3Service.DeleteFileAsync(bucketName, oldImage.Path).Result)
+                    throw new Exception("Error deleting image file from storage");
+
+                if (!_imagesRepository.DeleteImageData(commerceId, 1))
+                    throw new Exception("Error deleting advertising image data");
+            }
+
+            SaveCommerceImage(commerceId, image);
+
+            flag = true;
+
+            return flag;
         }
+
+
     }
 }

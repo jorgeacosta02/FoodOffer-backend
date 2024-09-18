@@ -12,5 +12,6 @@ namespace FoodOffer.Model.Repositories
         bool SaveImageData(AppImage image, char type);
         bool DeleteImageData(int advId, short item);
         AppImage GetAdvertisingImage(int AdvId);
+        AppImage GetCommerceImage(int ComId);
     }
 }

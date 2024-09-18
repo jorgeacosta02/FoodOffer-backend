@@ -38,6 +38,13 @@ namespace FoodOffer.Repository.Mapper
             .ForMember(a => a.adi_name, b => b.MapFrom(src => src.Name))
             .ReverseMap();
 
+            CreateMap<AppImage, Db_Commerce_Image>()
+            .ForMember(a => a.coi_com_id, b => b.MapFrom(src => src.ReferenceId))
+            .ForMember(a => a.coi_item, b => b.MapFrom(src => src.Item))
+            .ForMember(a => a.coi_path, b => b.MapFrom(src => src.Path))
+            .ForMember(a => a.coi_name, b => b.MapFrom(src => src.Name))
+            .ReverseMap();
+
             CreateMap<Advertising, Db_Advertising>()
             .ForMember(a => a.adv_id, b => b.MapFrom(src => src.Id))
             .ForMember(a => a.adv_title, b => b.MapFrom(src => src.Title))

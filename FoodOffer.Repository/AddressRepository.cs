@@ -30,7 +30,7 @@ namespace FoodOffer.Repository
             query.AppendLine("SELECT * FROM addresses ");
             query.AppendLine("INNER JOIN countries ON cou_cod = add_cou_cod ");
             query.AppendLine("INNER JOIN states ON ste_cod = add_ste_cod AND ste_cou_cod = add_cou_cod ");
-            query.AppendLine("INNER JOIN cities ON cit_cod = add_cit_cod AND cit_cou_cod = add_cou_cod AND cit_ste_cod == add_ste_cod ");
+            query.AppendLine("INNER JOIN cities ON cit_cod = add_cit_cod AND cit_cou_cod = add_cou_cod AND cit_ste_cod = add_ste_cod ");
             query.AppendLine("WHERE add_ref_id = @id ");
             query.AppendLine("AND add_ref_type = @type ");
 

@@ -13,7 +13,7 @@ namespace FoodOffer.Model.Models
         public int OwnerId { get; set; }
         public string Name { get; set; }
         public List<Address> Addresses { get; set; }
-        public List<Attribute> Attributes { get; set; }
+        public List<AttributeValue> Attributes { get; set; }
         public short Type { get; set; }
         public string? Mail { get; set; }
         public string? Phone { get; set; }
@@ -25,7 +25,7 @@ namespace FoodOffer.Model.Models
         public Commerce()
         {
             Addresses = new List<Address>();
-            Attributes = new List<Attribute>();
+            Attributes = new List<AttributeValue>();
         }
     }
 }

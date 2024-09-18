@@ -23,12 +23,21 @@ namespace FoodOffer.Repository
         }
 
 
-        public Commerce GetCommerce(int comId)
+        public List<Commerce> GetCommerces()
         {
-            var Adv = _context.commerces.FirstOrDefault(com => com.com_id == comId);
+            var commerces = _context.commerces.ToList();
             _context.Dispose();
 
-            return _mapper.Map<Commerce>(Adv);
+            return _mapper.Map<List<Commerce>>(commerces);
+
+        }
+
+        public Commerce GetCommerce(int comId)
+        {
+            var commerce = _context.commerces.FirstOrDefault(com => com.com_id == comId);
+            _context.Dispose();
+
+            return _mapper.Map<Commerce>(commerce);
 
         }
 
